@@ -1,0 +1,5 @@
+conda create --name untitled
+conda activate untitled
+conda install numpy
+conda install pandas
+conda install matplotlib
