@@ -8,7 +8,7 @@ conda create --name plotting <br />
 conda activate plotting<br />
 conda install numpy<br />
 conda install pandas<br />
-conda install matplotlib"<br />
+conda install matplotlib<br />
 
 
 currently works with module version:<br />
@@ -18,5 +18,5 @@ currently works with module version:<br />
 #matplotlib                3.6.2           py311h1ea47a8_0    conda-forge<br />
 
 
-screenshot of GUI as of 14-01-2023
+## screenshot of GUI as of 14-01-2023
 ![Alt text](/sxrdstructgui.png?raw=true "Optional Title")
