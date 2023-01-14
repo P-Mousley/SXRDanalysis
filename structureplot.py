@@ -13,6 +13,8 @@ import os, fnmatch
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+#import SXRDplot as sxrdplot
+#import SXRDfunction as sfunc
 
 
 
@@ -20,7 +22,7 @@ class StructurePlot(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(StructurePlot, self).__init__(*args, **kwargs)
-        self.ui = uic.loadUi(r"C:\Users\rpy65944\qtgui1.ui", self)
+        self.ui = uic.loadUi(r"C:\Users\rpy65944\structuregui.ui", self)
         self.figure = plt.figure()
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
@@ -28,12 +30,37 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.occval=0
         self.partval=1
         self.parts=[0]
+
+        layout = self.vlayout1
+        layout.addWidget(self.toolbar)
+        layout.addWidget(self.canvas)
+ 
+        self.ax = plt.axes([0,0,0.95,0.95],projection ='3d')
+        self.occset=1
+        self.dispset=1
+        self.indset=1
+        self.fig2 = plt.figure(figsize=(14,12))
+        self.canvas2 = FigureCanvas(self.fig2)
+        self.toolbar2 = NavigationToolbar(self.canvas2, self)
+        layout2 = self.vlayout2
+        layout2.addWidget(self.toolbar2)
+        layout2.addWidget(self.canvas2)
+        #self.fig2=plt.figure(figsize=(10,8))
+        self.plotvals=[]
+        self.modelinds=[]   
+        self.boundvals=np.array([[1,2],[1,2],[1,2]])
         self.openfit.clicked.connect(self.openfitfile)
+        self.checkbonds.clicked.connect(self.checkbonds1)
         self.plotbutton1.clicked.connect(self.pushplotbutton1)
-        self.savemacro.clicked.connect(self.makesavefit1)
-        self.plotctrs.clicked.connect(self.plotctrs1)
+        self.plotmod1.clicked.connect(lambda: self.plotmodeln(1))
+        self.plotmod2.clicked.connect(lambda: self.plotmodeln(2))
+        self.plotmod3.clicked.connect(lambda: self.plotmodeln(3))
+        self.savemacro.clicked.connect(self.makesavemac)
+        self.profmacro.clicked.connect(self.makeprofmac)
+        self.openxyz.clicked.connect(self.openxyz1)
         self.plotsavefit.clicked.connect(self.plotsavemodel)
         self.clearctrs.clicked.connect(self.clearctrs1)
+        self.clearmods.clicked.connect(self.clearmods1)
         self.addfit.clicked.connect(self.addfitfile)
         self.addpar.clicked.connect(self.addparfile)
         self.occbutton.clicked.connect(self.updateoccval)
@@ -50,15 +77,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.yspin.valueChanged.connect(self.updatedispval)
         self.parcheck.toggled.connect(self.pushplotbutton1)
         self.partspin.valueChanged.connect(self.updatepartval)
-        layout = self.vlayout1
-        layout.addWidget(self.toolbar)
-        layout.addWidget(self.canvas)
-        self.ax = plt.axes([0,0,0.95,0.95],projection ='3d')
-        self.occset=1
-        self.dispset=1
-        self.indset=1
-
-        self.plotvals=[]
+        self.modlabels=[self.mod1label,self.mod2label,self.mod3label]
     def addfitfile(self):
         """
         add fit file given in textbox to drop down menu fitcombo
@@ -77,12 +96,21 @@ class StructurePlot(QtWidgets.QMainWindow):
         """
         check for fig2 existence and clear figure if CTR plot already created
         """
-        print(hasattr(self,'fig2'))
         if hasattr(self,'fig2'):
             self.fig2.clear()
             plt.draw()
 #        else:
 #            self.fig2=plt.figure(figsize=(10,8))
+            
+    def clearmods1(self):
+        self.modelinds=[]
+        for i in np.arange(len(self.modlabels)):
+            self.modlabels[i].setText('Model {}: EMPTY'.format(i+1))
+        self.fitcombo.clear()
+        self.parcombo.clear()
+        
+        
+        
     def readfit(self,fitname,workfolder=0,pardata=[0],occdata=0):
     	fitcols=['El','X','x1','x2','x3','x4','Y','y1','y2','y3','y4','Z','z1','z2','z3','z4','dw1','dw2','Occ']#'ind',
     	fitcols2=['ind','El','X','x1','x2','x3','x4','Y','y1','y2','y3','y4','Z','z1','z2','z3','z4','dw1','dw2','Occ']#
@@ -124,14 +152,24 @@ class StructurePlot(QtWidgets.QMainWindow):
     	occdf[['type','parameter','value','upp','low','fitted']]=occdf.data.str.split(expand=True)
     	return(pardata,occdf,dispdf,infodf)
 	
-    def plotctrs1(self):
+    def openxyz1(self):
         """
-        uses workfolder and fitname given in textboxes (wordkfoldertext, fittext) and plots CTR profiles in new figure
+        opens saved xyz file using entry in fitcombo list and par combolist 
         
         """
-        workfolder=self.workfoldertext.toPlainText().strip('""')
-        fitname=self.fittext.toPlainText().strip('""')
-        
+        fit=self.fitcombo.currentText()
+        splitparts=fit.split('\\')
+        workfolder=''
+        for i in np.arange(len(splitparts[:-2])):
+            workfolder+=splitparts[i]+'\\'
+        fitname=splitparts[-2]
+        try:
+            xyzfile=r"{}\{}\{}.xyz".format(workfolder,fitname,fitname)
+            os.startfile(xyzfile)
+        except:
+            print('no XYZ file found')
+    
+    def updatectrs(self,workfolder,fitname):
         #parf=self.parcombo.currentText()
         #infodf=pd.read_csv(r"{}\{}\par_{}.par".format(workfolder,fitname,fitname),header=1)
         pardata=pd.read_csv(r"{}\{}\par_{}.par".format(workfolder,fitname,fitname),header=1,names=['data'])
@@ -170,8 +208,8 @@ class StructurePlot(QtWidgets.QMainWindow):
             ctrdf=lisdf
             self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,self.fig2)
 
-        self.fig2.show()
-    def makesavefit1(self):
+
+    def makesavemac(self):
         """
         creates a new saving macro for ROD and associated folder for directory and fitname given
         """
@@ -193,11 +231,50 @@ class StructurePlot(QtWidgets.QMainWindow):
             f.write("list comp {}\\{}\comp_{} comparison_file_bestfit\n".format(directory,fit,fit))
             f.write("plot xyz 2 2 1 {}\\{}\{} return\n".format(directory,fit,fit))
             f.close()
-            self.savemacrolabel.setText('macro created')
+            self.savemacrolabel.setText('savefit macro created')
     
         else:
-            #print('Folder already exists')
             self.savemacrolabel.setText('Folder already exists')
+            
+    def makeprofmac(self):
+        """
+        creates a new saving macro for ROD to save full line profile data from scans in a dataset.
+        Note that savefit.mac needs to have already been run, and data exists in the specified fit folder
+        """
+        directory=self.workfoldertext.toPlainText().strip('""')
+        fit=self.fittext.toPlainText().strip('""')
+        rodfolder=self.rodfolder.toPlainText().strip('""')
+        parf='{}\{}\par_{}.par'.format(directory,fit,fit)
+        parfile=open(r'{}'.format(parf))
+        lines=parfile.readlines()
+        parfile.close()
+        datf=lines[1].strip().split(' ')[-3]
+        bulf=lines[1].strip().split(' ')[-2]
+        fitf=lines[1].strip().split(' ')[-1]
+        datadf=pd.read_csv(datf,sep='\t')
+        comp=pd.read_csv("{}\{}\comp_{}.lis".format(directory,fit,fit),sep='\s+',header=1)
+        f = open(r"{}\savefullprofs.mac".format(rodfolder),"w")
+        f.write('re dat {}\n'.format(datf))
+        f.write('re bul {}\n'.format(bulf))
+        f.write('re fit {}\n'.format(fitf))
+        f.write('re par {}\n'.format(parf))
+        # f.write('set cal nsurf 28 return return \n')
+        # f.write('set cal s2 0.1 return return \n')
+        f.write('mac sfsetup\n')
+        #f.write('re par limits\n')
+        
+        scans=datadf[datadf['L']>0.2].groupby(['H','K']).size().reset_index().rename(columns={0:'count'})
+        for i in np.arange(len(scans)):
+            h=int(scans.loc[i,'H'])
+            k=int(scans.loc[i,'K'])
+            if (h==0) and (k==0):
+                f.write('set cal lstart 0 lend 10 return return\n ')
+            else:
+                f.write('set cal lstart 0 lend 7 return return\n' )
+            f.write('cal rod {} {} lis all {}\{}\{}_{}_full.dat {}_{}_full\n'.format(h,k,directory,fit,h,k,h,k))
+        f.close()
+        self.savemacrolabel.setText('profile macro created')
+            
     def plotsavemodel(self):
         """
         plot 3D model in main window using fit and par file defined in fit model text boxes
@@ -213,48 +290,71 @@ class StructurePlot(QtWidgets.QMainWindow):
         if fitindex<0:
             self.fitcombo.addItem(self.ptitle)
             fitindex=self.fitcombo.findText(self.ptitle)
+            self.modelinds.append(fitindex)
+            modn=len(self.modelinds)
+            self.modlabels[modn-1].setText('Model {}: {}'.format(modn,fitname))
         if parindex<0:
             self.parcombo.addItem(parf)
             parindex=self.parcombo.findText(parf)
-            
+        self.parcheck.setChecked(False)    
         self.fitcombo.setCurrentIndex(fitindex)
         self.parcombo.setCurrentIndex(parindex)
-        
-        #self.fitcombo.currentText()
-        self.ax.clear()
-        
-        if len(self.ptitle)>0:
-            self.calcstructure(self.ptitle)
-            [x,y,z,cols]=self.plotvals
-            self.ax.scatter3D(x, y, z,c=cols,edgecolors='black',)
-            print('check',self.checkfix.isChecked())
-            if self.checkfix.isChecked()==False:
-                self.ax.view_init(5,3)
-            self.boundbox(self.ax)
+        self.parcheck.setChecked(True)
+        par=self.parcombo.currentText()
+        fit=self.fitcombo.currentText()
+        self.plot3D(par,fit)
+        splitparts=fit.split('\\')
+        workfolder=''
+        for i in np.arange(len(splitparts[:-2])):
+            workfolder+=splitparts[i]+'\\'
+        fitname=splitparts[-2]
+        try:
+            self.updatectrs(workfolder,fitname)
+        except:
+            print('no CTR profiles found')
 
-        else:
-            print('no fit file loaded')
-        self.updateoccval()
-        if (len(parf)>0)  & (self.parcheck.isChecked()==True):
-             self.ax.set_title('{}\n{}'.format(self.fitcombo.currentText(),self.parcombo.currentText()),pad=0)
-        else:
-             self.ax.set_title(self.ptitle +' parts= ' + str(len(self.parts)),pad=0)
-        self.canvas.draw()
         
         
     def pushplotbutton1(self):
         """
         plot 3D model in main window using fit and par file defined in dropdown boxes (parcombo, fitcombo)
         """
-        parf=self.parcombo.currentText()
-        self.ptitle=self.fitcombo.currentText()
-        self.ax.clear()
+        par=self.parcombo.currentText()
+        fit=self.fitcombo.currentText()
+        self.plot3D(par,fit)
+    
+    def plotmodeln(self,n):
+        if len(self.modelinds)>=n:
+            self.parcheck.setChecked(False)
+            fitn=self.modelinds[n-1] 
+            self.fitcombo.setCurrentIndex(fitn)
+            self.parcombo.setCurrentIndex(fitn)
+            par=self.parcombo.currentText()
+            fit=self.fitcombo.currentText()
+            self.parcheck.setChecked(True)
+            self.plot3D(par,fit)
+            splitparts=fit.split('\\')
+            workfolder=''
+            for i in np.arange(len(splitparts[:-2])):
+                workfolder+=splitparts[i]+'\\'
+            fitname=splitparts[-2]
+            try:
+                self.updatectrs(workfolder,fitname)
+            except:
+                print('no CTR profiles found')
+        else:
+            print('no model {} loaded'.format(n))
         
+        
+    
+    def plot3D(self,par,fit):
+        self.ax.clear()
+        parf=par
+        self.ptitle=fit
         if len(self.ptitle)>0:
             self.calcstructure(self.ptitle)
             [x,y,z,cols]=self.plotvals
             self.ax.scatter3D(x, y, z,c=cols,edgecolors='black',)
-            print('check',self.checkfix.isChecked())
             if self.checkfix.isChecked()==False:
                 self.ax.view_init(5,3)
             self.boundbox(self.ax)
@@ -308,14 +408,46 @@ class StructurePlot(QtWidgets.QMainWindow):
         colB=plotcol.values[0][7]
         col=(colR,colG,colB)
         return(col)
-
+        
+    def calcvec(self,p1,p2):
+        sqvec=np.square(p1[0]-p2[0])+np.square(p1[1]-p2[1])+np.square(p1[2]-p2[2])
+        vec=np.sqrt(sqvec)
+        return(vec)
+        
+    def checkbonds1(self):
+        if self.atomindex.value()>0:
+            ind=self.atomindex.value()-1
+            self.model['xang']=self.model['newX']*self.lattice[0]
+            self.model['yang']=self.model['newY']*self.lattice[1]
+            self.model['zang']=self.model['newZ']*self.lattice[2]
+            self.model2=self.model.copy(deep=True)
+            self.model3=self.model.copy(deep=True)
+            self.model4=self.model.copy(deep=True)
+            self.model2['xang']=self.model['xang']+self.lattice[0]
+            self.model3['yang']=self.model['yang']+self.lattice[1]
+            self.model4['xang']=self.model['xang']+self.lattice[0]
+            self.model4['yang']=self.model['yang']+self.lattice[1]
+            self.modelfull=self.model.append([self.model2,self.model3,self.model4]).reset_index(drop=True)
+            
+            con1=abs(self.modelfull['xang']-self.modelfull.loc[ind+3*len(self.model),'xang'])<3
+            con2= abs(self.modelfull['yang']-self.modelfull.loc[ind+3*len(self.model),'yang'])<3
+            con3=abs(self.modelfull['zang']-self.modelfull.loc[ind+3*len(self.model),'zang'])<3
+            con4=abs(self.modelfull['zang']-self.modelfull.loc[ind+3*len(self.model),'zang'])>0
+            nearest=self.modelfull[(con1&con2&con3&con4)].reset_index(drop=True)
+            nearest['bondlength(Å)']=0
+            for n in np.arange(len(nearest)):
+                p1=self.modelfull.loc[ind+3*len(self.model),['xang','yang','zang']]
+                p2=nearest.loc[n,['xang','yang','zang']]
+                nearest.loc[n,'bondlength(Å)']=self.calcvec(p1,p2)
+            newnear=nearest.sort_values(by='bondlength(Å)')
+            print(newnear[['index','El','bondlength(Å)']])
         
     def calcstructure(self,file):
         """
         calculate structure from a given fit file
         """
         parf=self.parcombo.currentText()
-        if len(parf)>0:
+        if (len(parf)>0)&(self.parcheck.isChecked()):
             pard=self.readpar(parf)
             model1=self.readfit(file,pardata=pard[0])
         else:
@@ -323,10 +455,8 @@ class StructurePlot(QtWidgets.QMainWindow):
         
         model1=model1.reset_index()
         parts=[0]
-        for i in np.arange(len(model1)):
-            if i<1:
-                print('start')
-            elif (model1.loc[i]['Z']>model1.loc[i-1]['Z']):
+        for i in np.arange(len(model1))[1:]:
+            if (i>=1) &(model1.loc[i]['Z']>model1.loc[i-1]['Z']):
                 parts.append(i)
         parts.append(len(model1))
         self.parts=parts
@@ -351,6 +481,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         model['color']=model.apply(lambda x: self.getcolour(x['El']),axis=1)
         cols1=model['color']
         self.vectors=[a1,b1,c1]
+
 
         if (len(parf)>0)  & (self.parcheck.isChecked()==True):
             x1=model['newX']*a1[0] + model['newY']*b1[0]
@@ -378,7 +509,12 @@ class StructurePlot(QtWidgets.QMainWindow):
         xb=model['X']*a1[0] + model['Y']*b1[0]
         yb=model['X']*a1[1] + model['Y']*b1[1]
         zb=model['Z']*lattice[2]
-        self.boundvals=[xb,yb,zb]
+        if (xb.max()>self.boundvals[0].max()):
+            self.boundvals=[xb,yb,zb]
+        elif (yb.max()>self.boundvals[1].max()):
+            self.boundvals=[xb,yb,zb]
+        elif (zb.max()>self.boundvals[2].max()):
+            self.boundvals=[xb,yb,zb]
         self.plotvals=[x,y,z,cols]
         
     def updatepartval(self):
@@ -426,43 +562,45 @@ class StructurePlot(QtWidgets.QMainWindow):
         """
         plots selected atoms with chosen index
         """
-        indatoms=self.model[self.model.index==self.indval]
-        lattice=self.lattice
-        [a1,b1,c1]=self.vectors
-        
-        if (len(self.par1.toPlainText())>0) & (self.parcheck.isChecked()):
-            indx1=indatoms['newX']*a1[0] + indatoms['newY']*b1[0]
-            indy1=indatoms['newX']*a1[1] + indatoms['newY']*b1[1]
-            indz1=indatoms['newZ']*lattice[2]
-        else:
-            indx1=indatoms['X']*a1[0] + indatoms['Y']*b1[0]
-            indy1=indatoms['X']*a1[1] + indatoms['Y']*b1[1]
-            indz1=indatoms['Z']*lattice[2]
-        
-        indxfull=indx1.append(indx1+a1[0])
-        indyfull=indy1.append(indy1+a1[1])
-        indzfull=indz1.append(indz1)
-        
-        indxfull=indxfull.append(indx1+b1[0])
-        indyfull=indyfull.append(indy1+b1[1])
-        indzfull=indzfull.append(indz1)
-        
-        indxfull=indxfull.append(indx1+a1[0]+b1[0])
-        indyfull=indyfull.append(indy1+a1[1]+b1[1])
-        indzfull=indzfull.append(indz1)
-        
-        indx=[float(i) for i in indxfull]
-        indy=[float(i) for i in indyfull]
-        indz=[float(i) for i in indzfull]
-        indcol=self.occhigh.toPlainText()
-        self.indset=self.ax.scatter3D(indx, indy, indz,c=indcol,edgecolors='black',alpha=1,s=100)
-        if self.occset!=1:
-            self.occset.remove()
-            self.occset=1
-        if self.dispset!=1:
-            self.dispset.remove()
-            self.dispset=1
-        self.canvas.draw()
+        if self.atomindbutton.isChecked()&(self.indval>0):
+            indatoms=self.model[self.model['index']==self.indval]
+            lattice=self.lattice
+            [a1,b1,c1]=self.vectors
+            
+            if (len(self.par1.toPlainText())>0) & (self.parcheck.isChecked()):
+                indx1=indatoms['newX']*a1[0] + indatoms['newY']*b1[0]
+                indy1=indatoms['newX']*a1[1] + indatoms['newY']*b1[1]
+                indz1=indatoms['newZ']*lattice[2]
+            else:
+                indx1=indatoms['X']*a1[0] + indatoms['Y']*b1[0]
+                indy1=indatoms['X']*a1[1] + indatoms['Y']*b1[1]
+                indz1=indatoms['Z']*lattice[2]
+                
+            indxfull=indx1.append(indx1+a1[0])
+            indyfull=indy1.append(indy1+a1[1])
+            indzfull=indz1.append(indz1)
+            
+            indxfull=indxfull.append(indx1+b1[0])
+            indyfull=indyfull.append(indy1+b1[1])
+            indzfull=indzfull.append(indz1)
+            
+            indxfull=indxfull.append(indx1+a1[0]+b1[0])
+            indyfull=indyfull.append(indy1+a1[1]+b1[1])
+            indzfull=indzfull.append(indz1)
+            
+            indx=[float(i) for i in indxfull]
+            indy=[float(i) for i in indyfull]
+            indz=[float(i) for i in indzfull]
+            indcol=self.occhigh.toPlainText()
+            self.indset=self.ax.scatter3D(indx, indy, indz,c=indcol,edgecolors='black',alpha=1,s=100)
+            if self.occset!=1:
+                self.occset.remove()
+                self.occset=1
+            if self.dispset!=1:
+                self.dispset.remove()
+                self.dispset=1
+    
+            self.canvas.draw()
     
     def plotoccatoms(self):
         """
@@ -629,7 +767,6 @@ class StructurePlot(QtWidgets.QMainWindow):
     				yerr=df[(df['h']==hval) & (df['k']==kval)]['dF']
     				ax.errorbar(x,ydat,yerr,color='black',linestyle=' ', marker='o',markersize=5,label='data')
     				
-    			#print(str(hval),str(kval))
     			if reclab==1:
     				hvalrev,kvalrev=hval,kval
     			else:
