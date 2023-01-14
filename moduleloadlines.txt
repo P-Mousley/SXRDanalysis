@@ -1,9 +1,0 @@
-conda create --name untitled
-conda activate untitled
-conda install numpy
-conda install pandas
-conda install matplotlib
-
-#pandas                    1.5.2           py311hf63dbb6_2    conda-forge
-#numpy                     1.24.1          py311h95d790f_0    conda-forge
-#matplotlib                3.6.2           py311h1ea47a8_0    conda-forge
