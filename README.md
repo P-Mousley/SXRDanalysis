@@ -2,7 +2,7 @@
 This project contains GUIs to help with analysis of surface x-ray diffraction data, for use alongside the analysis software ROD
 
 To load up GUI, download the structureplot.py file and then run in python. 
-If there is a clash of module versions, try creating a new environment called 'plotting' for running the GUI by entering the following commands:
+If you are using anaconda package adn there is a clash of module versions, you can try creating a new environment called 'plotting' for running the GUI by entering the following commands:
 
 conda create --name plotting <br />
 conda activate plotting<br />
