@@ -1,5 +1,5 @@
 # SXRD analysis GUIs
-This project contains GUIs to help with analysis of surface x-ray diffraction data, for use alongside the analysis software ROD
+This project contains GUIs to help with analysis of surface x-ray diffraction data, for use alongside the analysis software <a href="https://www.esrf.fr/computing/scientific/joint_projects/ANA-ROD/index.html"> ROD </a>
 
 To load up GUI, download the structureplot.py file and then run in python. 
 If you are using anaconda package and there is a clash of module versions, you can try creating a new environment called 'plotting' for running the GUI by entering the following commands:
