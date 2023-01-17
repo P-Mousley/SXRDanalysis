@@ -39,7 +39,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.occset=1
         self.dispset=1
         self.indset=1
-        self.fig2 = plt.figure(figsize=(14,12))
+        self.fig2 = plt.figure(figsize=(12,18))
         self.canvas2 = FigureCanvas(self.fig2)
         self.toolbar2 = NavigationToolbar(self.canvas2, self)
         layout2 = self.vlayout2
@@ -47,7 +47,8 @@ class StructurePlot(QtWidgets.QMainWindow):
         layout2.addWidget(self.canvas2)
         #self.fig2=plt.figure(figsize=(10,8))
         self.plotvals=[]
-        self.modelinds=[]   
+        self.modelinds=[]
+        self.modpvals=[]
         self.boundvals=np.array([[1,2],[1,2],[1,2]])
         self.openfit.clicked.connect(self.openfitfile)
         self.checkbonds.clicked.connect(self.checkbonds1)
@@ -193,7 +194,7 @@ class StructurePlot(QtWidgets.QMainWindow):
             self.fig2.clear(True)
             plt.draw()
         else:
-            self.fig2=plt.figure(figsize=(10,8))
+            self.fig2=plt.figure(figsize=(12,18))
         
         lisdf=pd.read_csv('{}\{}\comp_{}.lis'.format(workfolder,fitname,fitname),sep='\s+',header=1)
         inpN=0
@@ -206,7 +207,7 @@ class StructurePlot(QtWidgets.QMainWindow):
             self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
         else:
             ctrdf=lisdf
-            self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,self.fig2)
+            self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
 
 
     def makesavemac(self):
@@ -417,9 +418,14 @@ class StructurePlot(QtWidgets.QMainWindow):
     def checkbonds1(self):
         if self.atomindex.value()>0:
             ind=self.atomindex.value()-1
-            self.model['xang']=self.model['newX']*self.lattice[0]
-            self.model['yang']=self.model['newY']*self.lattice[1]
-            self.model['zang']=self.model['newZ']*self.lattice[2]
+            if (self.parcheck.isChecked()==True):
+                self.model['xang']=self.model['newX']*self.lattice[0]
+                self.model['yang']=self.model['newY']*self.lattice[1]
+                self.model['zang']=self.model['newZ']*self.lattice[2]
+            else:
+                self.model['xang']=self.model['X']*self.lattice[0]
+                self.model['yang']=self.model['Y']*self.lattice[1]
+                self.model['zang']=self.model['Z']*self.lattice[2]
             self.model2=self.model.copy(deep=True)
             self.model3=self.model.copy(deep=True)
             self.model4=self.model.copy(deep=True)

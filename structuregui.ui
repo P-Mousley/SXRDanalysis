@@ -988,7 +988,7 @@ multiple surfaces</string>
         <x>10</x>
         <y>10</y>
         <width>991</width>
-        <height>721</height>
+        <height>731</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="vlayout2"/>
