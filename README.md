@@ -7,7 +7,7 @@ where ##### is the directory the ui file is saved.<br />
 Then run the structureplot.py file in python. <br />
 If you are using anaconda package and there is a clash of module versions, you can try creating a new environment called 'plotting' for running the GUI by entering the following commands:
 
-conda create --name plotting <br />
+conda create --name plotting python=3.7<br />
 conda activate plotting<br />
 conda install numpy<br />
 conda install pandas<br />
