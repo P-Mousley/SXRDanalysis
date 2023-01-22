@@ -14,7 +14,7 @@ conda install pandas<br />
 conda install matplotlib<br />
 
 
-currently works with module version:<br />
+currently works with module versions:<br />
 <br />
 #pandas                    1.5.2           py311hf63dbb6_2    conda-forge<br />
 #numpy                     1.24.1          py311h95d790f_0    conda-forge<br />
