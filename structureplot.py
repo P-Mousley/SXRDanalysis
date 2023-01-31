@@ -131,9 +131,9 @@ class StructurePlot(QtWidgets.QMainWindow):
     	else:
     		openf=fitname
     	try:
-    		fitfile=pd.read_csv(openf,header=1,sep='\s+',names=fitcols)
+    		fitfile=pd.read_csv(openf,header=1,sep=r'\s+',names=fitcols)
     	except:
-    		fitfile=pd.read_csv(openf,header=1,sep='\s+',names=fitcols2)
+    		fitfile=pd.read_csv(openf,header=1,sep=r'\s+',names=fitcols2)
     	
     	if len(pardata)>1:
     		dispdf=pardata[pardata['data'].str.contains('displace')]
@@ -208,7 +208,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         # else:
         #     self.fig2=plt.figure(figsize=(12,18))
         
-        lisdf=pd.read_csv('{}\{}\comp_{}.lis'.format(workfolder,fitname,fitname),sep='\s+',header=1)
+        lisdf=pd.read_csv('{}\\{}\\comp_{}.lis'.format(workfolder,fitname,fitname),sep=r'\s+',header=1)
         inpl=lisdf.loc[0,'l']
         inpN=len(lisdf[lisdf['l']==inpl])
         mat=[1,0,0,1]
@@ -248,14 +248,14 @@ class StructurePlot(QtWidgets.QMainWindow):
             os.makedirs(mypath)
             f = open(r'{}\savefit.mac'.format(rodfolder), "w")
             f.write("calc data\n")
-            f.write("list data {}\\{}\dat_{} data_file_for_best_fit\n".format(directory,fit,fit))
-            f.write("list Smod {}\\{}\sur_{} surface_model_bestfit\n".format(directory,fit,fit))
+            f.write("list data {}\\{}\\dat_{} data_file_for_best_fit\n".format(directory,fit,fit))
+            f.write("list Smod {}\\{}\\sur_{} surface_model_bestfit\n".format(directory,fit,fit))
             f.write("list Bmod {}\\{}\\bul_{} bulk_model_bestfit\n".format(directory,fit,fit))
             f.write("list Mmod {}\\{}\\mol_{} molecule_model_bestfit\n".format(directory,fit,fit))
             f.write("list para {}\\{}\\par_{} parameters_bestfit\n".format(directory,fit,fit))
             f.write("list fit  {}\\{}\\fit_{} fit_file_bestfit\n".format(directory,fit,fit))
-            f.write("list comp {}\\{}\comp_{} comparison_file_bestfit\n".format(directory,fit,fit))
-            f.write("plot xyz 2 2 1 {}\\{}\{} return\n".format(directory,fit,fit))
+            f.write("list comp {}\\{}\\comp_{} comparison_file_bestfit\n".format(directory,fit,fit))
+            f.write("plot xyz 2 2 1 {}\\{}\\{} return\n".format(directory,fit,fit))
             f.close()
             self.savemacrolabel.setText('savefit macro created')
     
@@ -270,7 +270,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         directory=self.workfoldertext.toPlainText().strip('""')
         fit=self.fittext.toPlainText().strip('""')
         rodfolder=self.rodfolder.toPlainText().strip('""')
-        parf='{}\{}\par_{}.par'.format(directory,fit,fit)
+        parf='{}\\{}\\par_{}.par'.format(directory,fit,fit)
         parfile=open(r'{}'.format(parf))
         lines=parfile.readlines()
         parfile.close()
@@ -278,7 +278,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         bulf=lines[1].strip().split(' ')[-2]
         fitf=lines[1].strip().split(' ')[-1]
         datadf=pd.read_csv(datf,sep='\t')
-        comp=pd.read_csv("{}\{}\comp_{}.lis".format(directory,fit,fit),sep='\s+',header=1)
+        #comp=pd.read_csv("{}\\{}\\comp_{}.lis".format(directory,fit,fit),sep=r'\s+',header=1)
         f = open(r"{}\savefullprofs.mac".format(rodfolder),"w")
         f.write('re dat {}\n'.format(datf))
         f.write('re bul {}\n'.format(bulf))
@@ -297,7 +297,7 @@ class StructurePlot(QtWidgets.QMainWindow):
                 f.write('set cal lstart 0 lend 10 return return\n ')
             else:
                 f.write('set cal lstart 0 lend 7 return return\n' )
-            f.write('cal rod {} {} lis all {}\{}\{}_{}_full.dat {}_{}_full\n'.format(h,k,directory,fit,h,k,h,k))
+            f.write('cal rod {} {} lis all {}\\{}\\{}_{}_full.dat {}_{}_full\n'.format(h,k,directory,fit,h,k,h,k))
         f.close()
         self.savemacrolabel.setText('profile macro created')
             
@@ -771,7 +771,7 @@ class StructurePlot(QtWidgets.QMainWindow):
     			
     			x=df[(df['h']==hval) & (df['k']==kval)]['l']
     			if model==1:
-    				calcdf=pd.read_csv("{}\\{}\\{}_{}_full.dat".format(wf,fit,str(hval),str(kval)),header=1,sep='\s+')
+    				calcdf=pd.read_csv("{}\\{}\\{}_{}_full.dat".format(wf,fit,str(hval),str(kval)),header=1,sep=r'\s+')
     				xcalc=calcdf['l']
     				ycalc=calcdf['f-sum']
     				ybul=calcdf['f-bulk']
