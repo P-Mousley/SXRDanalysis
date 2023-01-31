@@ -31,7 +31,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.partval=1
         self.parts=[0]
 
-        layout = self.vlayout1
+        layout = self.vlayoutModel
         layout.addWidget(self.canvas)
         layout.addWidget(self.toolbar)
         
@@ -43,10 +43,13 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.fig2 = plt.figure(figsize=(15,35))
         self.canvas2 = FigureCanvas(self.fig2)
         self.toolbar2 = NavigationToolbar(self.canvas2, self)
-        layout2 = self.vlayout2
+        layout2 = self.vlayoutCTR
         layout2.addWidget(self.canvas2)
-        layout2.addWidget(self.toolbar2)
         
+        self.fig2b = plt.figure(figsize=(15,35))
+        self.canvas2b = FigureCanvas(self.fig2b)
+        layout2.addWidget(self.canvas2b)
+        layout2.addWidget(self.toolbar2)
 
         self.fig3 = plt.figure(figsize=(15,35))
         self.canvas3 = FigureCanvas(self.fig3)
@@ -115,11 +118,14 @@ class StructurePlot(QtWidgets.QMainWindow):
 #            self.fig2=plt.figure(figsize=(10,8))
             
     def clearmods1(self):
+        self.fig2.clear(True)
+        self.fig3.clear(True)
         self.modelinds=[]
         for i in np.arange(len(self.modlabels)):
             self.modlabels[i].setText('Model {}: EMPTY'.format(i+1))
         self.fitcombo.clear()
         self.parcombo.clear()
+        
         
         
         
@@ -228,8 +234,13 @@ class StructurePlot(QtWidgets.QMainWindow):
         oopdf.loc[:,'FOR']=oopdf.apply(lambda x: ooptable[(ooptable['h']==x['h'])&(ooptable['k']==x['k'])].reset_index().loc[0,'FOR'], axis=1)
         ctrdf=oopdf[oopdf['FOR']==0]
         fordf=oopdf[oopdf['FOR']==1]
-        self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
+        if len(self.modelinds==1):
+            self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
+        else:
+            self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2b)
         self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig3)
+        self.fig2.set_tight_layout(True)
+        self.fig3.set_tight_layout(True)
         # else:
         #     oopdf=lisdf
         #     self.CTR_plot(oopdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
@@ -352,26 +363,32 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.plot3D(par,fit)
     
     def plotmodeln(self,n):
-        if len(self.modelinds)>=n:
-            self.parcheck.setChecked(False)
-            fitn=self.modelinds[n-1] 
-            self.fitcombo.setCurrentIndex(fitn)
-            self.parcombo.setCurrentIndex(fitn)
-            par=self.parcombo.currentText()
-            fit=self.fitcombo.currentText()
-            self.parcheck.setChecked(True)
-            self.plot3D(par,fit)
-            splitparts=fit.split('\\')
-            workfolder=''
-            for i in np.arange(len(splitparts[:-2])):
-                workfolder+=splitparts[i]+'\\'
-            fitname=splitparts[-2]
-            try:
-                self.updatectrs(workfolder,fitname)
-            except:
-                print('no CTR profiles found')
-        else:
-            print('no model {} loaded'.format(n))
+        if n==2:
+            self.fig2.set_visible(False)
+            self.fig2b.set_visible(True)
+        if n==1:
+            self.fig2.set_visible(True)
+            self.fig2b.set_visible(False)
+        # if len(self.modelinds)>=n:
+        #     self.parcheck.setChecked(False)
+        #     fitn=self.modelinds[n-1] 
+        #     self.fitcombo.setCurrentIndex(fitn)
+        #     self.parcombo.setCurrentIndex(fitn)
+        #     par=self.parcombo.currentText()
+        #     fit=self.fitcombo.currentText()
+        #     self.parcheck.setChecked(True)
+        #     self.plot3D(par,fit)
+        #     splitparts=fit.split('\\')
+        #     workfolder=''
+        #     for i in np.arange(len(splitparts[:-2])):
+        #         workfolder+=splitparts[i]+'\\'
+        #     fitname=splitparts[-2]
+        #     try:
+        #         self.updatectrs(workfolder,fitname)
+        #     except:
+        #         print('no CTR profiles found')
+        # else:
+        #     print('no model {} loaded'.format(n))
         
         
     
@@ -813,7 +830,7 @@ class StructurePlot(QtWidgets.QMainWindow):
     				
     				ax.set_title('[{}  {}  L]'.format(str(round(hvalrev,5)),str(round(kvalrev,5))))
     			#ax.xlabel('L')
-    			ax.set_ylim(20,2e3)
+    			ax.set_ylim(2,6e3)
     			ax.set_xlim(0,x.max()+0.25)
     			if log==1:
     				ax.set_yscale('log')
@@ -822,7 +839,7 @@ class StructurePlot(QtWidgets.QMainWindow):
     			#print(ydat.max(),'\n',hval,kval,plotupp)
     			if ydat.max()<101:
     				ax.set_ylim(1,5.5)
-    			fig.tight_layout() 
+    			#fig.tight_layout()
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
