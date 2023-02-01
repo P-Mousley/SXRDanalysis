@@ -48,6 +48,13 @@ class StructurePlot(QtWidgets.QMainWindow):
         layout2.addWidget(self.canvas2)
         layout2.addWidget(self.toolbar2)
         
+        self.fig3 = plt.figure(figsize=(15,35))
+        self.canvas3 = FigureCanvas(self.fig3)
+        self.toolbar3 = NavigationToolbar(self.canvas3, self)
+        layout3 = self.vlayoutFOR
+        layout3.addWidget(self.canvas3)
+        layout3.addWidget(self.toolbar3)        
+        
         self.fig2a = plt.figure(figsize=(15,35))
         self.canvas2a = FigureCanvas(self.fig2a)
         self.toolbar2a = NavigationToolbar(self.canvas2a, self)
@@ -61,16 +68,6 @@ class StructurePlot(QtWidgets.QMainWindow):
         layout2b = self.vlayoutmod2
         layout2b.addWidget(self.canvas2b)
         layout2b.addWidget(self.toolbar2b)
-
-
-        
-
-        self.fig3 = plt.figure(figsize=(15,35))
-        self.canvas3 = FigureCanvas(self.fig3)
-        self.toolbar3 = NavigationToolbar(self.canvas3, self)
-        layout3 = self.vlayoutFOR
-        layout3.addWidget(self.canvas3)
-        layout3.addWidget(self.toolbar3)
         
         #self.fig2=plt.figure(figsize=(10,8))
         self.plotvals=[]
