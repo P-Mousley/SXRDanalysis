@@ -960,7 +960,7 @@ multiple surfaces</string>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -975,7 +975,7 @@ multiple surfaces</string>
         <height>731</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="vlayout1"/>
+      <layout class="QVBoxLayout" name="vlayoutModel"/>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_4">
@@ -991,7 +991,7 @@ multiple surfaces</string>
         <height>731</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="vlayout2"/>
+      <layout class="QVBoxLayout" name="vlayoutCTR"/>
      </widget>
     </widget>
     <widget class="QWidget" name="tab">
@@ -1008,6 +1008,50 @@ multiple surfaces</string>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="vlayoutFOR"/>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Page</string>
+     </attribute>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>10</y>
+        <width>991</width>
+        <height>721</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="QWidget" name="page">
+       <widget class="QWidget" name="verticalLayoutWidget_4">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>10</y>
+          <width>961</width>
+          <height>691</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlayoutmod1"/>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_2">
+       <widget class="QWidget" name="verticalLayoutWidget_5">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>10</y>
+          <width>961</width>
+          <height>691</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlayoutmod2"/>
+       </widget>
+      </widget>
      </widget>
     </widget>
    </widget>

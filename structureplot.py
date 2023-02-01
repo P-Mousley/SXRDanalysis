@@ -40,16 +40,30 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.occset=1
         self.dispset=1
         self.indset=1
+
         self.fig2 = plt.figure(figsize=(15,35))
         self.canvas2 = FigureCanvas(self.fig2)
         self.toolbar2 = NavigationToolbar(self.canvas2, self)
         layout2 = self.vlayoutCTR
         layout2.addWidget(self.canvas2)
+        layout2.addWidget(self.toolbar2)
         
+        self.fig2a = plt.figure(figsize=(15,35))
+        self.canvas2a = FigureCanvas(self.fig2a)
+        self.toolbar2a = NavigationToolbar(self.canvas2a, self)
+        layout2 = self.vlayoutmod1
+        layout2.addWidget(self.canvas2a)
+        layout2.addWidget(self.toolbar2a)
+
         self.fig2b = plt.figure(figsize=(15,35))
         self.canvas2b = FigureCanvas(self.fig2b)
+        self.toolbar2b = NavigationToolbar(self.canvas2b, self)
+        layout2 = self.vlayoutmod2
         layout2.addWidget(self.canvas2b)
-        layout2.addWidget(self.toolbar2)
+        layout2.addWidget(self.toolbar2b)
+
+
+        
 
         self.fig3 = plt.figure(figsize=(15,35))
         self.canvas3 = FigureCanvas(self.fig3)
@@ -234,10 +248,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         oopdf.loc[:,'FOR']=oopdf.apply(lambda x: ooptable[(ooptable['h']==x['h'])&(ooptable['k']==x['k'])].reset_index().loc[0,'FOR'], axis=1)
         ctrdf=oopdf[oopdf['FOR']==0]
         fordf=oopdf[oopdf['FOR']==1]
-        if len(self.modelinds==1):
-            self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
-        else:
-            self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2b)
+        self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
         self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig3)
         self.fig2.set_tight_layout(True)
         self.fig3.set_tight_layout(True)
@@ -363,32 +374,26 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.plot3D(par,fit)
     
     def plotmodeln(self,n):
-        if n==2:
-            self.fig2.set_visible(False)
-            self.fig2b.set_visible(True)
-        if n==1:
-            self.fig2.set_visible(True)
-            self.fig2b.set_visible(False)
-        # if len(self.modelinds)>=n:
-        #     self.parcheck.setChecked(False)
-        #     fitn=self.modelinds[n-1] 
-        #     self.fitcombo.setCurrentIndex(fitn)
-        #     self.parcombo.setCurrentIndex(fitn)
-        #     par=self.parcombo.currentText()
-        #     fit=self.fitcombo.currentText()
-        #     self.parcheck.setChecked(True)
-        #     self.plot3D(par,fit)
-        #     splitparts=fit.split('\\')
-        #     workfolder=''
-        #     for i in np.arange(len(splitparts[:-2])):
-        #         workfolder+=splitparts[i]+'\\'
-        #     fitname=splitparts[-2]
-        #     try:
-        #         self.updatectrs(workfolder,fitname)
-        #     except:
-        #         print('no CTR profiles found')
-        # else:
-        #     print('no model {} loaded'.format(n))
+        if len(self.modelinds)>=n:
+            self.parcheck.setChecked(False)
+            fitn=self.modelinds[n-1] 
+            self.fitcombo.setCurrentIndex(fitn)
+            self.parcombo.setCurrentIndex(fitn)
+            par=self.parcombo.currentText()
+            fit=self.fitcombo.currentText()
+            self.parcheck.setChecked(True)
+            self.plot3D(par,fit)
+            splitparts=fit.split('\\')
+            workfolder=''
+            for i in np.arange(len(splitparts[:-2])):
+                workfolder+=splitparts[i]+'\\'
+            fitname=splitparts[-2]
+            try:
+                self.updatectrs(workfolder,fitname)
+            except:
+                print('no CTR profiles found')
+        else:
+            print('no model {} loaded'.format(n))
         
         
     
