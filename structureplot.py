@@ -55,19 +55,19 @@ class StructurePlot(QtWidgets.QMainWindow):
         layout3.addWidget(self.canvas3)
         layout3.addWidget(self.toolbar3)        
         
-        self.fig2a = plt.figure(figsize=(15,35))
-        self.canvas2a = FigureCanvas(self.fig2a)
-        self.toolbar2a = NavigationToolbar(self.canvas2a, self)
-        layout2a = self.vlayoutmod1
-        layout2a.addWidget(self.canvas2a)
-        layout2a.addWidget(self.toolbar2a)
+        # self.fig2a = plt.figure(figsize=(15,35))
+        # self.canvas2a = FigureCanvas(self.fig2a)
+        # self.toolbar2a = NavigationToolbar(self.canvas2a, self)
+        # layout2a = self.vlayoutmod1
+        # layout2a.addWidget(self.canvas2a)
+        # layout2a.addWidget(self.toolbar2a)
 
-        self.fig2b = plt.figure(figsize=(15,35))
-        self.canvas2b = FigureCanvas(self.fig2b)
-        self.toolbar2b = NavigationToolbar(self.canvas2b, self)
-        layout2b = self.vlayoutmod2
-        layout2b.addWidget(self.canvas2b)
-        layout2b.addWidget(self.toolbar2b)
+        # self.fig2b = plt.figure(figsize=(15,35))
+        # self.canvas2b = FigureCanvas(self.fig2b)
+        # self.toolbar2b = NavigationToolbar(self.canvas2b, self)
+        # layout2b = self.vlayoutmod2
+        # layout2b.addWidget(self.canvas2b)
+        # layout2b.addWidget(self.toolbar2b)
         
         #self.fig2=plt.figure(figsize=(10,8))
         self.plotvals=[]
