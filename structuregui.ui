@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1438</width>
+    <width>1456</width>
     <height>922</height>
    </rect>
   </property>
@@ -1024,7 +1024,7 @@ multiple surfaces</string>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <widget class="QWidget" name="verticalLayoutWidget_4">
@@ -1164,7 +1164,7 @@ multiple surfaces</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1438</width>
+     <width>1456</width>
      <height>21</height>
     </rect>
    </property>
