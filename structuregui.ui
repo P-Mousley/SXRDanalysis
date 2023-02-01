@@ -1017,10 +1017,10 @@ multiple surfaces</string>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>0</x>
         <y>10</y>
-        <width>991</width>
-        <height>721</height>
+        <width>1001</width>
+        <height>731</height>
        </rect>
       </property>
       <property name="currentIndex">
@@ -1031,9 +1031,9 @@ multiple surfaces</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>10</y>
-          <width>961</width>
-          <height>691</height>
+          <y>20</y>
+          <width>971</width>
+          <height>681</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="vlayoutmod1"/>
@@ -1043,8 +1043,8 @@ multiple surfaces</string>
        <widget class="QWidget" name="verticalLayoutWidget_5">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>10</y>
+          <x>30</x>
+          <y>20</y>
           <width>961</width>
           <height>691</height>
          </rect>
