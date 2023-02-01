@@ -51,16 +51,16 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.fig2a = plt.figure(figsize=(15,35))
         self.canvas2a = FigureCanvas(self.fig2a)
         self.toolbar2a = NavigationToolbar(self.canvas2a, self)
-        layout2 = self.vlayoutmod1
-        layout2.addWidget(self.canvas2a)
-        layout2.addWidget(self.toolbar2a)
+        layout2a = self.vlayoutmod1
+        layout2a.addWidget(self.canvas2a)
+        layout2a.addWidget(self.toolbar2a)
 
         self.fig2b = plt.figure(figsize=(15,35))
         self.canvas2b = FigureCanvas(self.fig2b)
         self.toolbar2b = NavigationToolbar(self.canvas2b, self)
-        layout2 = self.vlayoutmod2
-        layout2.addWidget(self.canvas2b)
-        layout2.addWidget(self.toolbar2b)
+        layout2b = self.vlayoutmod2
+        layout2b.addWidget(self.canvas2b)
+        layout2b.addWidget(self.toolbar2b)
 
 
         
