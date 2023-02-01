@@ -249,6 +249,11 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig3)
         self.fig2.set_tight_layout(True)
         self.fig3.set_tight_layout(True)
+        if len(self.modelinds)==1:
+            self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig4)
+        elif len(self.modelinds)==2:
+            self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig5)
+
         # else:
         #     oopdf=lisdf
         #     self.CTR_plot(oopdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
