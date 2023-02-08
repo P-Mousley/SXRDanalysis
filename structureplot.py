@@ -708,6 +708,9 @@ class StructurePlot(QtWidgets.QMainWindow):
         return(vec)
         
     def checkbonds1(self):
+        """
+        check bond lengths to nearest atoms neighbouring atom with chosen index
+        """
         if self.atomindex.value()>0:
             ind=self.atomindex.value()-1
             if (self.parcheck.isChecked()==True):
