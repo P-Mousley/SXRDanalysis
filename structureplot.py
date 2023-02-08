@@ -41,50 +41,111 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.dispset=1
         self.indset=1
 
-        self.fig2 = plt.figure(figsize=(15,35))
-        self.canvas2 = FigureCanvas(self.fig2)
-        self.toolbar2 = NavigationToolbar(self.canvas2, self)
-        layout2 = self.vlayoutCTR
-        layout2.addWidget(self.canvas2)
-        layout2.addWidget(self.toolbar2)
+        # self.fig2 = plt.figure(figsize=(15,35))
+        # self.canvas2 = FigureCanvas(self.fig2)
+        # self.toolbar2 = NavigationToolbar(self.canvas2, self)
+        # layout2 = self.vlayoutCTR
+        # layout2.addWidget(self.canvas2)
+        # layout2.addWidget(self.toolbar2)
         
-        self.fig3 = plt.figure(figsize=(15,35))
-        self.canvas3 = FigureCanvas(self.fig3)
-        self.toolbar3 = NavigationToolbar(self.canvas3, self)
-        layout3 = self.vlayoutFOR
-        layout3.addWidget(self.canvas3)
-        layout3.addWidget(self.toolbar3)        
+        # self.fig3 = plt.figure(figsize=(15,35))
+        # self.canvas3 = FigureCanvas(self.fig3)
+        # self.toolbar3 = NavigationToolbar(self.canvas3, self)
+        # layout3 = self.vlayoutFOR
+        # layout3.addWidget(self.canvas3)
+        # layout3.addWidget(self.toolbar3)        
         
         self.fig4 = plt.figure(figsize=(15,35))
         self.canvas4 = FigureCanvas(self.fig4)
         self.toolbar4 = NavigationToolbar(self.canvas4, self)
-        layout4 = self.vlayoutmod1
+        layout4 = self.vlCTRmod1
         layout4.addWidget(self.canvas4)
         layout4.addWidget(self.toolbar4)
 
         self.fig5 = plt.figure(figsize=(15,35))
         self.canvas5 = FigureCanvas(self.fig5)
         self.toolbar5 = NavigationToolbar(self.canvas5, self)
-        layout5 = self.vlayoutmod2
+        layout5 = self.vlCTRmod2
         layout5.addWidget(self.canvas5)
         layout5.addWidget(self.toolbar5)
+
+        self.fig3dcomp1 = plt.figure(figsize=(15,35))
+        self.canvas6 = FigureCanvas(self.fig3dcomp1)
+        self.toolbar6 = NavigationToolbar(self.canvas6, self)
+        layout6 = self.vlayout3dcomp1
+        layout6.addWidget(self.canvas6)
+        layout6.addWidget(self.toolbar6)
+        self.ax3d1 = plt.axes([0,0,0.95,0.95],projection ='3d')
+  
+
+        self.fig3dcomp2 = plt.figure(figsize=(15,35))
+        self.canvas7 = FigureCanvas(self.fig3dcomp2)
+        self.toolbar7 = NavigationToolbar(self.canvas7, self)
+        layout7 = self.vlayout3dcomp2
+        layout7.addWidget(self.canvas7)
+        layout7.addWidget(self.toolbar7)
+        self.ax3d2 = plt.axes([0,0,0.95,0.95],projection ='3d')
+
+
+
+        self.fig8 = plt.figure(figsize=(15,35))
+        self.canvas8 = FigureCanvas(self.fig8)
+        self.toolbar8 = NavigationToolbar(self.canvas8, self)
+        layout8 = self.vlFORmod1
+        layout8.addWidget(self.canvas8)
+        layout8.addWidget(self.toolbar8)
+
+        self.fig9 = plt.figure(figsize=(15,35))
+        self.canvas9 = FigureCanvas(self.fig9)
+        self.toolbar9 = NavigationToolbar(self.canvas9, self)
+        layout9 = self.vlFORmod2
+        layout9.addWidget(self.canvas9)
+        layout9.addWidget(self.toolbar9)
+    
+        self.fig10 = plt.figure(figsize=(15,35))
+        self.canvas10 = FigureCanvas(self.fig10)
+        self.toolbar10 = NavigationToolbar(self.canvas10, self)
+        layout10 = self.vlFORmod3
+        layout10.addWidget(self.canvas10)
+        layout10.addWidget(self.toolbar10)
+
+        self.fig11 = plt.figure(figsize=(15,35))
+        self.canvas11 = FigureCanvas(self.fig11)
+        self.toolbar11 = NavigationToolbar(self.canvas11, self)
+        layout11 = self.vlCTRmod3
+        layout11.addWidget(self.canvas11)
+        layout11.addWidget(self.toolbar11)
+
+        self.fig3dcomp3 = plt.figure(figsize=(15,35))
+        self.canvas12 = FigureCanvas(self.fig3dcomp3)
+        self.toolbar12 = NavigationToolbar(self.canvas12, self)
+        layout12 = self.vlayout3dcomp3
+        layout12.addWidget(self.canvas12)
+        layout12.addWidget(self.toolbar12)
+        self.ax3d3 = plt.axes([0,0,0.95,0.95],projection ='3d')
+
+
+
         
+        self.axs3d=[self.ax3d1,self.ax3d2,self.ax3d3]
+        self.canvs3d=[self.canvas6,self.canvas7,self.canvas12]
         #self.fig2=plt.figure(figsize=(10,8))
         self.plotvals=[]
         self.modelinds=[]
+        self.modelcount=0
         self.modpvals=[]
         self.boundvals=np.array([[1,2],[1,2],[1,2]])
         self.openfit.clicked.connect(self.openfitfile)
         self.checkbonds.clicked.connect(self.checkbonds1)
         self.plotbutton1.clicked.connect(self.pushplotbutton1)
-        self.plotmod1.clicked.connect(lambda: self.plotmodeln(1))
-        self.plotmod2.clicked.connect(lambda: self.plotmodeln(2))
-        self.plotmod3.clicked.connect(lambda: self.plotmodeln(3))
+        self.plotmod1.clicked.connect(self.viewplot1)
+        self.plotmod2.clicked.connect(self.viewplot2)
+        self.plotmod3.clicked.connect(self.viewplot3)
         self.savemacro.clicked.connect(self.makesavemac)
         self.profmacro.clicked.connect(self.makeprofmac)
         self.openxyz.clicked.connect(self.openxyz1)
-        self.plotsavefit.clicked.connect(self.plotsavemodel)
-        self.clearctrs.clicked.connect(self.clearctrs1)
+        self.plotsavefit.clicked.connect(self.plotsavemodelcompare)
+        #self.clearctrs.clicked.connect(self.clearctrs1)
         self.clearmods.clicked.connect(self.clearmods1)
         self.addfit.clicked.connect(self.addfitfile)
         self.addpar.clicked.connect(self.addparfile)
@@ -95,14 +156,15 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.atomindbutton.clicked.connect(self.updateindval)
         self.occspin.valueChanged.connect(self.updateoccval)
         self.atomindex.valueChanged.connect(self.updateindval)
-        self.fitcombo.currentTextChanged.connect(self.pushplotbutton1)
-        self.parcombo.currentTextChanged.connect(self.pushplotbutton1)
+        # self.fitcombo.currentTextChanged.connect(self.pushplotbutton1)
+        # self.parcombo.currentTextChanged.connect(self.pushplotbutton1)
         self.zspin.valueChanged.connect(self.updatedispval)
         self.xspin.valueChanged.connect(self.updatedispval)
         self.yspin.valueChanged.connect(self.updatedispval)
-        self.parcheck.toggled.connect(self.pushplotbutton1)
+        #self.parcheck.toggled.connect(self.pushplotbutton1)
         self.partspin.valueChanged.connect(self.updatepartval)
         self.modlabels=[self.mod1label,self.mod2label,self.mod3label]
+        self.modelinfo=[]
     def addfitfile(self):
         """
         add fit file given in textbox to drop down menu fitcombo
@@ -116,29 +178,126 @@ class StructurePlot(QtWidgets.QMainWindow):
     def openfitfile(self):
         filename=self.text1.toPlainText()
         os.startfile(filename)
+    def viewplot1(self):
+        """
+        switch all figures to plot data from model 1
+        """
+        currin=self.stackedWidget.currentIndex()
+        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget_2.setCurrentIndex(0)
+        self.stackedWidget_3.setCurrentIndex(0)
+        if currin==1:
+            self.ax3d1.view_init(self.ax3d2.elev,self.ax3d2.azim)
+        else:
+            self.ax3d1.view_init(self.ax3d3.elev,self.ax3d3.azim)
+        self.canvas6.draw()
+        if self.plotmaincheck.isChecked()==True:
+            try:
+                fitn=self.modelinds[0] 
+                self.fitcombo.setCurrentIndex(fitn)
+                self.parcombo.setCurrentIndex(fitn)
+                self.parcheck.setChecked(True)
+                par=self.parcombo.currentText()
+                fit=self.fitcombo.currentText()
+                self.plot3D(par,fit)
+            except Exception as e:
+                print("The error raised is: ", e)
 
-    def clearctrs1(self):
-        """
-        check for fig2 existence and clear figure if CTR plot already created
-        """
-        if hasattr(self,'fig2'):
-            self.fig2.clear()
-            self.fig3.clear()
-            plt.draw()
-#        else:
-#            self.fig2=plt.figure(figsize=(10,8))
+        # self.canvas4.draw()
+        # self.canvas5.draw()
+
+
+
+    def viewplot2(self):
+        currin=self.stackedWidget.currentIndex()
+        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget_2.setCurrentIndex(1)
+        self.stackedWidget_3.setCurrentIndex(1)
+        if currin==0:
+            self.ax3d2.view_init(self.ax3d1.elev,self.ax3d1.azim)
+        else:
+            self.ax3d2.view_init(self.ax3d3.elev,self.ax3d3.azim)
+               
+        self.canvas7.draw()
+        if self.plotmaincheck.isChecked()==True:
+            try:
+                fitn=self.modelinds[1] 
+                self.fitcombo.setCurrentIndex(fitn)
+                self.parcombo.setCurrentIndex(fitn)
+                self.parcheck.setChecked(True)
+                par=self.parcombo.currentText()
+                fit=self.fitcombo.currentText()
+                self.plot3D(par,fit)
+            except Exception as e:
+                print("The error raised is: ", e)
+
+
+
+    def viewplot3(self):
+        currin=self.stackedWidget.currentIndex()
+        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget_2.setCurrentIndex(2)
+        self.stackedWidget_3.setCurrentIndex(2)
+        if currin==0:
+            self.ax3d3.view_init(self.ax3d1.elev,self.ax3d1.azim)
+        else:
+            self.ax3d3.view_init(self.ax3d2.elev,self.ax3d2.azim)
+        self.canvas12.draw()
+
+        if self.plotmaincheck.isChecked()==True:
+            try:
+                fitn=self.modelinds[2] 
+                self.fitcombo.setCurrentIndex(fitn)
+                self.parcombo.setCurrentIndex(fitn)
+                self.parcheck.setChecked(True)
+                par=self.parcombo.currentText()
+                fit=self.fitcombo.currentText()
+                self.plot3D(par,fit)
+            except Exception as e:
+                print("The error raised is: ", e)
+        
+
+    
+
+#     def clearctrs1(self):
+#         """
+#         check for fig2 existence and clear figure if CTR plot already created
+#         """
+#         if hasattr(self,'fig2'):
+#             self.fig2.clear()
+#             self.fig3.clear()
+#             plt.draw()
+# #        else:
+# #            self.fig2=plt.figure(figsize=(10,8))
             
     def clearmods1(self):
-        self.fig2.clear(True)
-        self.fig3.clear(True)
+        # self.fig2.clear(True)
+        # self.fig3.clear(True)
+        self.ax.clear()
+        self.fig4.clear(True)
+        self.fig5.clear(True)
+        self.ax3d1.clear()
+        self.ax3d2.clear()
+        self.fig8.clear(True)
+        self.fig9.clear(True)
+        self.fig10.clear(True)
+        self.fig11.clear(True)
+        self.ax3d3.clear()
+        self.canvas.draw()
+        self.canvas4.draw()
+        self.canvas5.draw()
+        self.canvas6.draw()
+        self.canvas7.draw()
+        self.canvas11.draw()
+        self.canvas12.draw()
+        self.parinfo.setText('Occupancy info:\n')
+
         self.modelinds=[]
+        self.modelcount=0
         for i in np.arange(len(self.modlabels)):
             self.modlabels[i].setText('Model {}: EMPTY'.format(i+1))
         self.fitcombo.clear()
         self.parcombo.clear()
-        
-        
-        
         
     def readfit(self,fitname,workfolder=0,pardata=[0],occdata=0):
     	fitcols=['El','X','x1','x2','x3','x4','Y','y1','y2','y3','y4','Z','z1','z2','z3','z4','dw1','dw2','Occ']#'ind',
@@ -198,6 +357,8 @@ class StructurePlot(QtWidgets.QMainWindow):
         except:
             print('no XYZ file found')
     
+
+    
     def updatectrs(self,workfolder,fitname):
         #parf=self.parcombo.currentText()
         #infodf=pd.read_csv(r"{}\{}\par_{}.par".format(workfolder,fitname,fitname),header=1)
@@ -218,10 +379,10 @@ class StructurePlot(QtWidgets.QMainWindow):
         scales[['type','parameter','value','upp','low','fitted']]=scales.data.str.split(expand=True)
         plotnorm=float(scales['value'][0])
         scales['plotval']=scales.apply(lambda x: float(x['value'])/plotnorm,axis=1)
-        if hasattr(self,'fig2'):
-            self.fig2.clear(True)
-            self.fig3.clear(True)
-            plt.draw()
+        # if hasattr(self,'fig2'):
+        #     self.fig2.clear(True)
+        #     self.fig3.clear(True)
+        #     plt.draw()
         # else:
         #     self.fig2=plt.figure(figsize=(12,18))
         
@@ -245,14 +406,39 @@ class StructurePlot(QtWidgets.QMainWindow):
         oopdf.loc[:,'FOR']=oopdf.apply(lambda x: ooptable[(ooptable['h']==x['h'])&(ooptable['k']==x['k'])].reset_index().loc[0,'FOR'], axis=1)
         ctrdf=oopdf[oopdf['FOR']==0]
         fordf=oopdf[oopdf['FOR']==1]
-        self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
-        self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig3)
-        self.fig2.set_tight_layout(True)
-        self.fig3.set_tight_layout(True)
-        if len(self.modelinds)==1:
+        # if self.modelcount==0:
+        #     self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig)
+        #     self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig3)
+        #     self.fig2.set_tight_layout(True)
+        #     self.fig3.set_tight_layout(True)
+        if self.modelcount<=1:
             self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig4)
-        elif len(self.modelinds)==2:
+            self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig8)
+            self.stackedWidget.setCurrentIndex(0)
+            self.stackedWidget_3.setCurrentIndex(0)
+            self.fig4.set_tight_layout(True)
+            self.fig8.set_tight_layout(True)
+            self.canvas4.draw()
+            self.canvas8.draw()
+
+        elif self.modelcount==2:
             self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig5)
+            self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig9)
+            self.stackedWidget.setCurrentIndex(1)
+            self.stackedWidget_3.setCurrentIndex(1)
+            self.fig5.set_tight_layout(True)
+            self.fig9.set_tight_layout(True)
+            self.canvas5.draw()
+            self.canvas9.draw()
+        elif self.modelcount==3:
+            self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig11)
+            self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig10)
+            self.stackedWidget.setCurrentIndex(2)
+            self.stackedWidget_3.setCurrentIndex(2)
+            self.fig11.set_tight_layout(True)
+            self.fig10.set_tight_layout(True)
+            self.canvas11.draw()
+            self.canvas10.draw()
 
         # else:
         #     oopdf=lisdf
@@ -279,6 +465,7 @@ class StructurePlot(QtWidgets.QMainWindow):
             f.write("list para {}\\{}\\par_{} parameters_bestfit\n".format(directory,fit,fit))
             f.write("list fit  {}\\{}\\fit_{} fit_file_bestfit\n".format(directory,fit,fit))
             f.write("list comp {}\\{}\\comp_{} comparison_file_bestfit\n".format(directory,fit,fit))
+            f.write("list con {}\\{}\\con_{} comparison_file_bestfit\n".format(directory,fit,fit))
             f.write("plot xyz 2 2 1 {}\\{}\\{} return\n".format(directory,fit,fit))
             f.close()
             self.savemacrolabel.setText('savefit macro created')
@@ -324,7 +511,30 @@ class StructurePlot(QtWidgets.QMainWindow):
             f.write('cal rod {} {} lis all {}\\{}\\{}_{}_full.dat {}_{}_full\n'.format(h,k,directory,fit,h,k,h,k))
         f.close()
         self.savemacrolabel.setText('profile macro created')
+
+    def plotsavemodelcompare(self):
+        workfolder=self.workfoldertext.toPlainText().strip('""')
+        fitname=self.fittext.toPlainText().strip('""')
+        parf='{}\\{}\\par_{}.par'.format(workfolder,fitname,fitname)
+        fitf='{}\\{}\\fit_{}.fit'.format(workfolder,fitname,fitname)
+        self.modelcount+=1
+        modn=self.modelcount 
+        if modn<=3:
+        #self.modelinfo[modn]=[parf,fitf]
+            self.updatectrs(workfolder,fitname)
             
+            self.modlabels[modn-1].setText('Model {}: {}'.format(modn,fitname))
+            
+            self.plot3Dcomp(parf,fitf,ax=self.axs3d[modn-1],canv=self.canvs3d[modn-1])
+            self.stackedWidget_2.setCurrentIndex(modn-1)
+            self.stackedWidget.setCurrentIndex(modn-1)
+            self.canvs3d[modn-1].draw()
+            self.plotsavemodel()
+        else:
+            print("maximum models reached, clear models and plot again")
+
+
+
     def plotsavemodel(self):
         """
         plot 3D model in main window using fit and par file defined in fit model text boxes
@@ -397,11 +607,41 @@ class StructurePlot(QtWidgets.QMainWindow):
         else:
             print('no model {} loaded'.format(n))
         
+    def plot3Dcomp(self,par,fit,ax,canv):
+        ax.clear()
+        parf=par
+        self.ptitle=fit
+        self.parcheck.setChecked(True)
+        if len(self.ptitle)>0:
+            self.calcstructure(fit,parfile=parf)
+            [x,y,z,cols]=self.plotvals
+            ax.scatter3D(x, y, z,c=cols,edgecolors='black',)
+            if self.checkfix.isChecked()==False:
+                ax.view_init(5,3)
+            self.boundbox(ax)
+
+        else:
+            print('no fit file loaded')
+        self.updateoccval()
+        if (len(parf)>0)  & (self.parcheck.isChecked()==True):
+             ax.set_title('{}\n{}'.format(fit,par),pad=0)
+        else:
+             ax.set_title(parf,pad=0)
+        canv.draw()
         
+
     
     def plot3D(self,par,fit):
         self.ax.clear()
         parf=par
+        if len(parf)>0:
+            pard=self.readpar(parf)
+            occs=pard[1][['parameter','value']].reset_index(drop=True)
+            totalstring=''
+            for i in np.arange(len(occs)):
+                totalstring+='{}  {}\n'.format(occs.loc[i,'parameter'],occs.loc[i,'value'])
+            self.parinfo.setText('Occupancy info:\n'+totalstring)
+
         self.ptitle=fit
         if len(self.ptitle)>0:
             self.calcstructure(self.ptitle)
@@ -410,6 +650,7 @@ class StructurePlot(QtWidgets.QMainWindow):
             if self.checkfix.isChecked()==False:
                 self.ax.view_init(5,3)
             self.boundbox(self.ax)
+
 
         else:
             print('no fit file loaded')
@@ -499,11 +740,14 @@ class StructurePlot(QtWidgets.QMainWindow):
             newnear=nearest.sort_values(by='bondlength(Å)')
             print(newnear[['index','El','bondlength(Å)']])
         
-    def calcstructure(self,file):
+    def calcstructure(self,file,parfile=0):
         """
         calculate structure from a given fit file
         """
-        parf=self.parcombo.currentText()
+        if parfile==0:
+            parf=self.parcombo.currentText()
+        else:
+            parf=parfile
         if (len(parf)>0)&(self.parcheck.isChecked()):
             pard=self.readpar(parf)
             model1=self.readfit(file,pardata=pard[0])
