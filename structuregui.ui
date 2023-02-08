@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1438</width>
+    <width>1456</width>
     <height>922</height>
    </rect>
   </property>
@@ -339,7 +339,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;O:\Ag(111)_beamtime_Apr2019\ROD_fits&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;O:\SOFC_project\2015_3nm-LAO\matlab_reduced_1-RT\RODfits&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="fittext">
@@ -356,7 +356,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;dep234_10err_29723&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;LAO_LSNO_19947&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
@@ -960,11 +960,11 @@ multiple surfaces</string>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
-      <string>3D model</string>
+      <string>Main 3D model</string>
      </attribute>
      <widget class="QWidget" name="verticalLayoutWidget">
       <property name="geometry">
@@ -975,39 +975,194 @@ multiple surfaces</string>
         <height>731</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="vlayout1"/>
+      <layout class="QVBoxLayout" name="vlayoutModel"/>
+     </widget>
+     <widget class="QLabel" name="parinfo">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>200</y>
+        <width>111</width>
+        <height>391</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Occupancy info</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_4">
+    <widget class="QWidget" name="tab_5">
      <attribute name="title">
-      <string>CTR plots</string>
+      <string>3Dcompare</string>
      </attribute>
-     <widget class="QWidget" name="verticalLayoutWidget_2">
+     <widget class="QStackedWidget" name="stackedWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>20</y>
+        <width>1001</width>
+        <height>721</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QWidget" name="page_3">
+       <widget class="QWidget" name="verticalLayoutWidget_6">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>981</width>
+          <height>721</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlayout3dcomp1"/>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_4">
+       <widget class="QWidget" name="verticalLayoutWidget_7">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>981</width>
+          <height>721</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlayout3dcomp2"/>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_9">
+       <widget class="QWidget" name="verticalLayoutWidget_12">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>981</width>
+          <height>721</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlayout3dcomp3"/>
+       </widget>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>CTRcompare</string>
+     </attribute>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>10</y>
+        <width>1001</width>
+        <height>731</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QWidget" name="page">
+       <widget class="QWidget" name="verticalLayoutWidget_4">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>961</width>
+          <height>691</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlCTRmod1"/>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_2">
+       <widget class="QWidget" name="verticalLayoutWidget_5">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>961</width>
+          <height>691</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlCTRmod2"/>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_7">
+       <widget class="QWidget" name="verticalLayoutWidget_10">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>961</width>
+          <height>691</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlCTRmod3"/>
+       </widget>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_6">
+     <attribute name="title">
+      <string>FORcompare</string>
+     </attribute>
+     <widget class="QStackedWidget" name="stackedWidget_3">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>991</width>
+        <width>1001</width>
         <height>731</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="vlayout2"/>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tab">
-     <attribute name="title">
-      <string>FOR plots</string>
-     </attribute>
-     <widget class="QWidget" name="verticalLayoutWidget_3">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>991</width>
-        <height>731</height>
-       </rect>
+      <property name="currentIndex">
+       <number>2</number>
       </property>
-      <layout class="QVBoxLayout" name="vlayoutFOR"/>
+      <widget class="QWidget" name="page_5">
+       <widget class="QWidget" name="verticalLayoutWidget_8">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>961</width>
+          <height>691</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlFORmod1"/>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_6">
+       <widget class="QWidget" name="verticalLayoutWidget_9">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>961</width>
+          <height>691</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlFORmod2"/>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_8">
+       <widget class="QWidget" name="verticalLayoutWidget_11">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>961</width>
+          <height>691</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlFORmod3"/>
+       </widget>
+      </widget>
      </widget>
     </widget>
    </widget>
@@ -1076,6 +1231,19 @@ multiple surfaces</string>
      <string>check bond lengths</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="plotmaincheck">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>850</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>plot on main</string>
+    </property>
+   </widget>
    <zorder>tabWidget</zorder>
    <zorder>label</zorder>
    <zorder>text1</zorder>
@@ -1114,13 +1282,14 @@ multiple surfaces</string>
    <zorder>mod2label</zorder>
    <zorder>mod3label</zorder>
    <zorder>checkbonds</zorder>
+   <zorder>plotmaincheck</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1438</width>
+     <width>1456</width>
      <height>21</height>
     </rect>
    </property>
