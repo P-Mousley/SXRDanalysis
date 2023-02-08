@@ -22,7 +22,7 @@ class StructurePlot(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(StructurePlot, self).__init__(*args, **kwargs)
-        self.ui = uic.loadUi(r"C:\Users\rpy65944\structuregui.ui", self)
+        self.ui = uic.loadUi(r"C:\\Users\\rpy65944\Documents\\GitHub\SXRDanalysis\structuregui.ui", self)
         self.figure = plt.figure()
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
@@ -32,19 +32,29 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.parts=[0]
 
         layout = self.vlayout1
-        layout.addWidget(self.toolbar)
         layout.addWidget(self.canvas)
+        layout.addWidget(self.toolbar)
+        
  
         self.ax = plt.axes([0,0,0.95,0.95],projection ='3d')
         self.occset=1
         self.dispset=1
         self.indset=1
-        self.fig2 = plt.figure(figsize=(12,18))
+        self.fig2 = plt.figure(figsize=(15,35))
         self.canvas2 = FigureCanvas(self.fig2)
         self.toolbar2 = NavigationToolbar(self.canvas2, self)
         layout2 = self.vlayout2
-        layout2.addWidget(self.toolbar2)
         layout2.addWidget(self.canvas2)
+        layout2.addWidget(self.toolbar2)
+        
+
+        self.fig3 = plt.figure(figsize=(15,35))
+        self.canvas3 = FigureCanvas(self.fig3)
+        self.toolbar3 = NavigationToolbar(self.canvas3, self)
+        layout3 = self.vlayoutFOR
+        layout3.addWidget(self.canvas3)
+        layout3.addWidget(self.toolbar3)
+        
         #self.fig2=plt.figure(figsize=(10,8))
         self.plotvals=[]
         self.modelinds=[]
@@ -99,6 +109,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         """
         if hasattr(self,'fig2'):
             self.fig2.clear()
+            self.fig3.clear()
             plt.draw()
 #        else:
 #            self.fig2=plt.figure(figsize=(10,8))
@@ -120,9 +131,9 @@ class StructurePlot(QtWidgets.QMainWindow):
     	else:
     		openf=fitname
     	try:
-    		fitfile=pd.read_csv(openf,header=1,sep='\s+',names=fitcols)
+    		fitfile=pd.read_csv(openf,header=1,sep=r'\s+',names=fitcols)
     	except:
-    		fitfile=pd.read_csv(openf,header=1,sep='\s+',names=fitcols2)
+    		fitfile=pd.read_csv(openf,header=1,sep=r'\s+',names=fitcols2)
     	
     	if len(pardata)>1:
     		dispdf=pardata[pardata['data'].str.contains('displace')]
@@ -192,22 +203,36 @@ class StructurePlot(QtWidgets.QMainWindow):
         scales['plotval']=scales.apply(lambda x: float(x['value'])/plotnorm,axis=1)
         if hasattr(self,'fig2'):
             self.fig2.clear(True)
+            self.fig3.clear(True)
             plt.draw()
-        else:
-            self.fig2=plt.figure(figsize=(12,18))
+        # else:
+        #     self.fig2=plt.figure(figsize=(12,18))
         
-        lisdf=pd.read_csv('{}\{}\comp_{}.lis'.format(workfolder,fitname,fitname),sep='\s+',header=1)
-        inpN=0
+        lisdf=pd.read_csv('{}\\{}\\comp_{}.lis'.format(workfolder,fitname,fitname),sep=r'\s+',header=1)
+        inpl=lisdf.loc[0,'l']
+        inpN=len(lisdf[lisdf['l']==inpl])
         mat=[1,0,0,1]
         reclab=1
         log=1
-        plotupp=1,
-        if inpN>0:
-            ctrdf=lisdf[inpN:]
-            self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
-        else:
-            ctrdf=lisdf
-            self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
+        plotupp=1
+        oopdf=lisdf[inpN:]
+        ooptable=oopdf.groupby(['h','k']).size().reset_index().rename(columns={0:'count'})
+        ooptable['FOR']=0
+        ooptable['CTR']=0
+        for i in np.arange(len(ooptable)):
+            maxval=oopdf[(oopdf['h']==ooptable.loc[i,'h'])&(oopdf['k']==ooptable.loc[i,'k'])]['f-dat'].max()
+            if maxval<100:
+                ooptable.loc[i,'FOR']=1
+            else:
+                ooptable.loc[i,'CTR']=1
+        oopdf.loc[:,'FOR']=oopdf.apply(lambda x: ooptable[(ooptable['h']==x['h'])&(ooptable['k']==x['k'])].reset_index().loc[0,'FOR'], axis=1)
+        ctrdf=oopdf[oopdf['FOR']==0]
+        fordf=oopdf[oopdf['FOR']==1]
+        self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
+        self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig3)
+        # else:
+        #     oopdf=lisdf
+        #     self.CTR_plot(oopdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig2)
 
 
     def makesavemac(self):
@@ -223,14 +248,14 @@ class StructurePlot(QtWidgets.QMainWindow):
             os.makedirs(mypath)
             f = open(r'{}\savefit.mac'.format(rodfolder), "w")
             f.write("calc data\n")
-            f.write("list data {}\\{}\dat_{} data_file_for_best_fit\n".format(directory,fit,fit))
-            f.write("list Smod {}\\{}\sur_{} surface_model_bestfit\n".format(directory,fit,fit))
+            f.write("list data {}\\{}\\dat_{} data_file_for_best_fit\n".format(directory,fit,fit))
+            f.write("list Smod {}\\{}\\sur_{} surface_model_bestfit\n".format(directory,fit,fit))
             f.write("list Bmod {}\\{}\\bul_{} bulk_model_bestfit\n".format(directory,fit,fit))
             f.write("list Mmod {}\\{}\\mol_{} molecule_model_bestfit\n".format(directory,fit,fit))
             f.write("list para {}\\{}\\par_{} parameters_bestfit\n".format(directory,fit,fit))
             f.write("list fit  {}\\{}\\fit_{} fit_file_bestfit\n".format(directory,fit,fit))
-            f.write("list comp {}\\{}\comp_{} comparison_file_bestfit\n".format(directory,fit,fit))
-            f.write("plot xyz 2 2 1 {}\\{}\{} return\n".format(directory,fit,fit))
+            f.write("list comp {}\\{}\\comp_{} comparison_file_bestfit\n".format(directory,fit,fit))
+            f.write("plot xyz 2 2 1 {}\\{}\\{} return\n".format(directory,fit,fit))
             f.close()
             self.savemacrolabel.setText('savefit macro created')
     
@@ -245,7 +270,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         directory=self.workfoldertext.toPlainText().strip('""')
         fit=self.fittext.toPlainText().strip('""')
         rodfolder=self.rodfolder.toPlainText().strip('""')
-        parf='{}\{}\par_{}.par'.format(directory,fit,fit)
+        parf='{}\\{}\\par_{}.par'.format(directory,fit,fit)
         parfile=open(r'{}'.format(parf))
         lines=parfile.readlines()
         parfile.close()
@@ -253,7 +278,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         bulf=lines[1].strip().split(' ')[-2]
         fitf=lines[1].strip().split(' ')[-1]
         datadf=pd.read_csv(datf,sep='\t')
-        comp=pd.read_csv("{}\{}\comp_{}.lis".format(directory,fit,fit),sep='\s+',header=1)
+        #comp=pd.read_csv("{}\\{}\\comp_{}.lis".format(directory,fit,fit),sep=r'\s+',header=1)
         f = open(r"{}\savefullprofs.mac".format(rodfolder),"w")
         f.write('re dat {}\n'.format(datf))
         f.write('re bul {}\n'.format(bulf))
@@ -263,7 +288,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         # f.write('set cal s2 0.1 return return \n')
         f.write('mac sfsetup\n')
         #f.write('re par limits\n')
-        
+        print(datf)
         scans=datadf[datadf['L']>0.2].groupby(['H','K']).size().reset_index().rename(columns={0:'count'})
         for i in np.arange(len(scans)):
             h=int(scans.loc[i,'H'])
@@ -272,7 +297,7 @@ class StructurePlot(QtWidgets.QMainWindow):
                 f.write('set cal lstart 0 lend 10 return return\n ')
             else:
                 f.write('set cal lstart 0 lend 7 return return\n' )
-            f.write('cal rod {} {} lis all {}\{}\{}_{}_full.dat {}_{}_full\n'.format(h,k,directory,fit,h,k,h,k))
+            f.write('cal rod {} {} lis all {}\\{}\\{}_{}_full.dat {}_{}_full\n'.format(h,k,directory,fit,h,k,h,k))
         f.close()
         self.savemacrolabel.setText('profile macro created')
             
@@ -311,8 +336,10 @@ class StructurePlot(QtWidgets.QMainWindow):
         fitname=splitparts[-2]
         try:
             self.updatectrs(workfolder,fitname)
-        except:
+        except Exception as e:
+            print("The error raised is: ", e)
             print('no CTR profiles found')
+            #print(workfolder, fitname)
 
         
         
@@ -727,24 +754,24 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.canvas.draw()
 
     def CTR_plot(self,df,model,log,fit,mat,plotupp,wf,reclab,datdf,scales,fig):
-    		CTRtable=df.groupby(['h','k']).size().reset_index().rename(columns={0:'count'})
-    		CTRnum=len(CTRtable)
+    		ooptable=df.groupby(['h','k']).size().reset_index().rename(columns={0:'count'})
+    		CTRnum=len(ooptable)
     		rowcalc=lambda x: (x[0]//x[1])+1 if x[0]%x[1]>0 else (x[0]//x[1])
-    		rowvals=[CTRnum,2]
+    		rowvals=[CTRnum,3]
     		rows=rowcalc(rowvals)
     		#fig=plt.figure(figsize=(20,30))		#figs[1]#		
     		datdf['fh']=datdf.apply(lambda x: float(x['h']),axis=1)
     		datdf['fk']=datdf.apply(lambda x: float(x['k']),axis=1)
     		datdf['fl']=datdf.apply(lambda x: float(x['l']),axis=1)
     		#plt.title('{}'.format(fit),y=1.08)
-    		for i in np.arange(len(CTRtable)):
+    		for i in np.arange(len(ooptable)):
     			ax=fig.add_subplot(rows,3,1+i)
-    			hval=round(CTRtable.iloc[i]['h'])
-    			kval=round(CTRtable.iloc[i]['k'])
+    			hval=round(ooptable.iloc[i]['h'])
+    			kval=round(ooptable.iloc[i]['k'])
     			
     			x=df[(df['h']==hval) & (df['k']==kval)]['l']
     			if model==1:
-    				calcdf=pd.read_csv("{}\\{}\\{}_{}_full.dat".format(wf,fit,str(hval),str(kval)),header=1,sep='\s+')
+    				calcdf=pd.read_csv("{}\\{}\\{}_{}_full.dat".format(wf,fit,str(hval),str(kval)),header=1,sep=r'\s+')
     				xcalc=calcdf['l']
     				ycalc=calcdf['f-sum']
     				ybul=calcdf['f-bulk']
@@ -757,7 +784,7 @@ class StructurePlot(QtWidgets.QMainWindow):
     				#if not((hval==0)&(kval==0)):
     				ycalc=ycalc*yscale#
     					#ycalc=ycalc 
-    				ax.errorbar(x,ydat,yerr=errors,color='black',linestyle='', marker='o',markersize=5,label='data',zorder=1)
+    				ax.errorbar(x,ydat,yerr=errors,color='black',linestyle='', marker='',markersize=5,label='data',zorder=1)
     				if log==1:
     					ax.semilogy(xcalc,ycalc,color='r',linestyle='-', marker='', label='model',zorder=2)
     					#ax.semilogy(xcalc,ybul,color='blue',linestyle='--', marker='', label='bulk',zorder=2)
@@ -786,15 +813,15 @@ class StructurePlot(QtWidgets.QMainWindow):
     				
     				ax.set_title('[{}  {}  L]'.format(str(round(hvalrev,5)),str(round(kvalrev,5))))
     			#ax.xlabel('L')
-    			ax.set_ylim(1,5e4)
+    			ax.set_ylim(20,2e3)
     			ax.set_xlim(0,x.max()+0.25)
     			if log==1:
     				ax.set_yscale('log')
     			else:
     				ax.set_yscale('linear')
-    			
-    			if ydat.max()<=100:
-    				ax.set_ylim(0.2,plotupp)
+    			#print(ydat.max(),'\n',hval,kval,plotupp)
+    			if ydat.max()<101:
+    				ax.set_ylim(1,5.5)
     			fig.tight_layout() 
 
 def main():
