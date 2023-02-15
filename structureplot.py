@@ -730,14 +730,32 @@ class StructurePlot(QtWidgets.QMainWindow):
             self.model4['yang']=self.model['yang']+self.lattice[1]
             self.modelfull=self.model.append([self.model2,self.model3,self.model4]).reset_index(drop=True)
             
-            con1=abs(self.modelfull['xang']-self.modelfull.loc[ind+3*len(self.model),'xang'])<3
-            con2= abs(self.modelfull['yang']-self.modelfull.loc[ind+3*len(self.model),'yang'])<3
-            con3=abs(self.modelfull['zang']-self.modelfull.loc[ind+3*len(self.model),'zang'])<3
-            con4=abs(self.modelfull['zang']-self.modelfull.loc[ind+3*len(self.model),'zang'])>0
-            nearest=self.modelfull[(con1&con2&con3&con4)].reset_index(drop=True)
+            #schematic of 2x2 grid of repeat unit cells
+            # |0,1   1,1|
+            # |0,0   1,0|
+            #identify short bonds for (1,1) of 2x2 grid of repeat unit cells
+            con1a=abs(self.modelfull['xang']-self.modelfull.loc[ind+3*len(self.model),'xang'])<3
+            con2a= abs(self.modelfull['yang']-self.modelfull.loc[ind+3*len(self.model),'yang'])<3
+            con3a=abs(self.modelfull['zang']-self.modelfull.loc[ind+3*len(self.model),'zang'])<3
+            con4a=abs(self.modelfull['zang']-self.modelfull.loc[ind+3*len(self.model),'zang'])>0
+            nearesta=self.modelfull[(con1a&con2a&con3a&con4a)].reset_index(drop=True)
+
+            #identify short bonds for  0,0  of a 2x2 grid of repeat unit cells
+            con1b=abs(self.modelfull['xang']-self.modelfull.loc[ind,'xang'])<3
+            con2b= abs(self.modelfull['yang']-self.modelfull.loc[ind,'yang'])<3
+            con3b=abs(self.modelfull['zang']-self.modelfull.loc[ind,'zang'])<3
+            con4b=abs(self.modelfull['zang']-self.modelfull.loc[ind,'zang'])>0
+
+            nearestb=self.modelfull[(con1b&con2b&con3b&con4b)].reset_index(drop=True)
+            nearest=pd.concat([nearesta,nearestb]).reset_index(drop=True)
+
+
             nearest['bondlength(Å)']=0
             for n in np.arange(len(nearest)):
-                p1=self.modelfull.loc[ind+3*len(self.model),['xang','yang','zang']]
+                if n<len(nearesta):
+                    p1=self.modelfull.loc[ind+3*len(self.model),['xang','yang','zang']]
+                else:
+                    p1=self.modelfull.loc[ind,['xang','yang','zang']]
                 p2=nearest.loc[n,['xang','yang','zang']]
                 nearest.loc[n,'bondlength(Å)']=self.calcvec(p1,p2)
             newnear=nearest.sort_values(by='bondlength(Å)')
