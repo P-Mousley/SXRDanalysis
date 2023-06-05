@@ -13,6 +13,7 @@ import os, fnmatch
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.patches import Circle, Wedge, Polygon
 #import SXRDplot as sxrdplot
 #import SXRDfunction as sfunc
 #test adddition
@@ -124,9 +125,29 @@ class StructurePlot(QtWidgets.QMainWindow):
         layout12.addWidget(self.toolbar12)
         self.ax3d3 = plt.axes([0,0,0.95,0.95],projection ='3d')
 
-
-
         
+        self.fig13 = plt.figure(figsize=(15,35))
+        self.canvas13 = FigureCanvas(self.fig13)
+        self.toolbar13 = NavigationToolbar(self.canvas13, self)
+        layout13 = self.vlinpmod1
+        layout13.addWidget(self.canvas13)
+        layout13.addWidget(self.toolbar13)
+
+        self.fig14 = plt.figure(figsize=(15,35))
+        self.canvas14 = FigureCanvas(self.fig14)
+        self.toolbar14 = NavigationToolbar(self.canvas14, self)
+        layout14 = self.vlinpmod2
+        layout14.addWidget(self.canvas14)
+        layout14.addWidget(self.toolbar14)
+
+        self.fig15 = plt.figure(figsize=(15,35))
+        self.canvas15 = FigureCanvas(self.fig15)
+        self.toolbar15 = NavigationToolbar(self.canvas15, self)
+        layout15 = self.vlinpmod3
+        layout15.addWidget(self.canvas15)
+        layout15.addWidget(self.toolbar15)
+
+
         self.axs3d=[self.ax3d1,self.ax3d2,self.ax3d3]
         self.canvs3d=[self.canvas6,self.canvas7,self.canvas12]
         #self.fig2=plt.figure(figsize=(10,8))
@@ -175,9 +196,11 @@ class StructurePlot(QtWidgets.QMainWindow):
         add par file given in textbox to drop down menu parcombo
         """
         self.parcombo.addItem(self.par1.toPlainText().strip('""'))
+
     def openfitfile(self):
         filename=self.text1.toPlainText()
         os.startfile(filename)
+
     def viewplot1(self):
         """
         switch all figures to plot data from model 1
@@ -186,11 +209,13 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.stackedWidget.setCurrentIndex(0)
         self.stackedWidget_2.setCurrentIndex(0)
         self.stackedWidget_3.setCurrentIndex(0)
+        self.stackedWidget_4.setCurrentIndex(0)
         if currin==1:
             self.ax3d1.view_init(self.ax3d2.elev,self.ax3d2.azim)
         else:
             self.ax3d1.view_init(self.ax3d3.elev,self.ax3d3.azim)
         self.canvas6.draw()
+        self.canvas13.draw()
         if self.plotmaincheck.isChecked()==True:
             try:
                 fitn=self.modelinds[0] 
@@ -213,6 +238,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.stackedWidget.setCurrentIndex(1)
         self.stackedWidget_2.setCurrentIndex(1)
         self.stackedWidget_3.setCurrentIndex(1)
+        self.stackedWidget_4.setCurrentIndex(1)
         if currin==0:
             self.ax3d2.view_init(self.ax3d1.elev,self.ax3d1.azim)
         else:
@@ -238,6 +264,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.stackedWidget.setCurrentIndex(2)
         self.stackedWidget_2.setCurrentIndex(2)
         self.stackedWidget_3.setCurrentIndex(2)
+        self.stackedWidget_4.setCurrentIndex(2)
         if currin==0:
             self.ax3d3.view_init(self.ax3d1.elev,self.ax3d1.azim)
         else:
@@ -282,6 +309,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.fig9.clear(True)
         self.fig10.clear(True)
         self.fig11.clear(True)
+        self.fig13.clear(True)
         self.ax3d3.clear()
         self.canvas.draw()
         self.canvas4.draw()
@@ -290,6 +318,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.canvas7.draw()
         self.canvas11.draw()
         self.canvas12.draw()
+        self.canvas13.draw()
         self.parinfo.setText('Occupancy info:\n')
 
         self.modelinds=[]
@@ -300,46 +329,50 @@ class StructurePlot(QtWidgets.QMainWindow):
         self.parcombo.clear()
         
     def readfit(self,fitname,workfolder=0,pardata=[0],occdata=0):
-    	fitcols=['El','X','x1','x2','x3','x4','Y','y1','y2','y3','y4','Z','z1','z2','z3','z4','dw1','dw2','Occ']#'ind',
-    	fitcols2=['ind','El','X','x1','x2','x3','x4','Y','y1','y2','y3','y4','Z','z1','z2','z3','z4','dw1','dw2','Occ']#
-    	if len(fitname.split('\\'))==1:
-    		openf=r"{}\{}\fit_{}.fit".format(workfolder,fitname,fitname)
-    	else:
-    		openf=fitname
-    	try:
-    		fitfile=pd.read_csv(openf,header=1,sep=r'\s+',names=fitcols)
-    	except:
-    		fitfile=pd.read_csv(openf,header=1,sep=r'\s+',names=fitcols2)
-    	
-    	if len(pardata)>1:
-    		dispdf=pardata[pardata['data'].str.contains('displace')]
-    		dispdf[['type','parameter','value','upp','low','fitted']]=dispdf.data.str.split(expand=True)
-    		fitfile['newZ']=fitfile.apply(lambda x: float(x['Z'])+float(dispdf[dispdf['parameter']==str(x['z2'])]['value'].values[0]) if x['z2']>0 else float(x['Z']), axis=1)
-    		fitfile['newZ']=fitfile.apply(lambda x: float(x['newZ'])+float(dispdf[dispdf['parameter']==str(x['z4'])]['value'].values[0]) if x['z4']>0 else float(x['newZ']), axis=1)
-    		fitfile['newX']=fitfile.apply(lambda x: float(x['X'])+float(dispdf[dispdf['parameter']==str(x['x2'])]['value'].values[0]) if x['x2']>0 else float(x['X']), axis=1)
-    		fitfile['newX']=fitfile.apply(lambda x: float(x['newX'])+float(dispdf[dispdf['parameter']==str(x['x4'])]['value'].values[0]) if x['x4']>0 else float(x['newX']), axis=1)
-    		fitfile['newY']=fitfile.apply(lambda x: float(x['Y'])+float(dispdf[dispdf['parameter']==str(x['y2'])]['value'].values[0]) if x['y2']>0 else float(x['Y']), axis=1)
-    		fitfile['newY']=fitfile.apply(lambda x: float(x['newY'])+float(dispdf[dispdf['parameter']==str(x['y4'])]['value'].values[0]) if x['y4']>0 else float(x['newY']), axis=1)
-    		occdf=pardata[pardata['data'].str.contains('occupancy')]
-    		occdf[['type','parameter','value','upp','low','fitted']]=occdf.data.str.split(expand=True)
-    		occdf.reset_index(drop=True)
-    		fitfile['occstr']=fitfile.apply(lambda x: occdf[occdf['parameter']==str(x['Occ'])]['value'].values[0] if x['Occ']>0 else 1 , axis=1)
-    		fitfile['occval']=fitfile['occstr'].apply(lambda x: float(x))
-    	return(fitfile)
+        fitcols=['El','X','x1','x2','x3','x4','Y','y1','y2','y3','y4','Z','z1','z2','z3','z4','dw1','dw2','Occ']#'ind',
+        fitcols2=['ind','El','X','x1','x2','x3','x4','Y','y1','y2','y3','y4','Z','z1','z2','z3','z4','dw1','dw2','Occ']
+        if len(fitname.split('\\'))==1:
+            openf=r"{}\{}\fit_{}.fit".format(workfolder,fitname,fitname)
+        else:
+            openf=fitname
+        try:
+            fitfile=pd.read_csv(openf,header=1,sep=r'\s+',names=fitcols)
+        except:
+            fitfile=pd.read_csv(openf,header=1,sep=r'\s+',names=fitcols2)
+        
+        if len(pardata)>1:
+            dispdf=pardata[pardata['data'].str.contains('displace')]
+            if len(dispdf)>0:
+                dispdf[['type','parameter','value','upp','low','fitted']]=dispdf.data.str.split(expand=True)
+            fitfile['newZ']=fitfile.apply(lambda x: float(x['Z'])+float(dispdf[dispdf['parameter']==str(x['z2'])]['value'].values[0]) if x['z2']>0 else float(x['Z']), axis=1)
+            fitfile['newZ']=fitfile.apply(lambda x: float(x['newZ'])+float(dispdf[dispdf['parameter']==str(x['z4'])]['value'].values[0]) if x['z4']>0 else float(x['newZ']), axis=1)
+            fitfile['newX']=fitfile.apply(lambda x: float(x['X'])+float(dispdf[dispdf['parameter']==str(x['x2'])]['value'].values[0]) if x['x2']>0 else float(x['X']), axis=1)
+            fitfile['newX']=fitfile.apply(lambda x: float(x['newX'])+float(dispdf[dispdf['parameter']==str(x['x4'])]['value'].values[0]) if x['x4']>0 else float(x['newX']), axis=1)
+            fitfile['newY']=fitfile.apply(lambda x: float(x['Y'])+float(dispdf[dispdf['parameter']==str(x['y2'])]['value'].values[0]) if x['y2']>0 else float(x['Y']), axis=1)
+            fitfile['newY']=fitfile.apply(lambda x: float(x['newY'])+float(dispdf[dispdf['parameter']==str(x['y4'])]['value'].values[0]) if x['y4']>0 else float(x['newY']), axis=1)
+            occdf=pardata[pardata['data'].str.contains('occupancy')]
+            if len(occdf)>0:
+                occdf[['type','parameter','value','upp','low','fitted']]=occdf.data.str.split(expand=True)
+                occdf.reset_index(drop=True)
+            fitfile['occstr']=fitfile.apply(lambda x: occdf[occdf['parameter']==str(x['Occ'])]['value'].values[0] if x['Occ']>0 else 1 , axis=1)
+            fitfile['occval']=fitfile['occstr'].apply(lambda x: float(x))
+        return(fitfile)
         
     def readpar(self,fitname,workfolder=0):
-    	if workfolder==0:
-    		infodf=pd.read_csv(r"{}".format(fitname),header=1)
-    		pardata=pd.read_csv(r"{}".format(fitname),header=5, index_col=False, names=['data'])
-    	else:
-    		infodf=pd.read_csv(r"{}\{}\par_{}.par".format(workfolder,fitname,fitname),header=1)
-    		pardata=pd.read_csv(r"{}\{}\par_{}.par".format(workfolder,fitname,fitname),header=5, index_col=False, names=['data'])
-    	occdf=pardata[pardata['data'].str.contains('occupancy')]
-    	dispdf=pardata[pardata['data'].str.contains('displace')]
-    	dispdf[['type','parameter','value','upp','low','fitted']]=dispdf.data.str.split(expand=True)
-    	occdf[['type','parameter','value','upp','low','fitted']]=occdf.data.str.split(expand=True)
-    	return(pardata,occdf,dispdf,infodf)
-	
+        if workfolder==0:
+            infodf=pd.read_csv(r"{}".format(fitname),header=1)
+            pardata=pd.read_csv(r"{}".format(fitname),header=5, index_col=False, names=['data'])
+        else:
+            infodf=pd.read_csv(r"{}\{}\par_{}.par".format(workfolder,fitname,fitname),header=1)
+            pardata=pd.read_csv(r"{}\{}\par_{}.par".format(workfolder,fitname,fitname),header=5, index_col=False, names=['data'])
+        occdf=pardata[pardata['data'].str.contains('occupancy')]
+        dispdf=pardata[pardata['data'].str.contains('displace')]
+        if len(dispdf)>0:
+            dispdf[['type','parameter','value','upp','low','fitted']]=dispdf.data.str.split(expand=True)
+        if len(occdf)>0:
+            occdf[['type','parameter','value','upp','low','fitted']]=occdf.data.str.split(expand=True)
+        return(pardata,occdf,dispdf,infodf)
+        
     def openxyz1(self):
         """
         opens saved xyz file using entry in fitcombo list and par combolist 
@@ -377,7 +410,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         datdf['scale']= datdf.apply(lambda x: (x['flag'][0]) ,axis=1)
         scales=pardata[pardata['data'].str.contains('subscale')].reset_index(drop=True)
         scales[['type','parameter','value','upp','low','fitted']]=scales.data.str.split(expand=True)
-        plotnorm=float(scales['value'][0])
+        plotnorm=float(scales['value'].max())#[len(scales)-1])
         scales['plotval']=scales.apply(lambda x: float(x['value'])/plotnorm,axis=1)
         # if hasattr(self,'fig2'):
         #     self.fig2.clear(True)
@@ -387,12 +420,13 @@ class StructurePlot(QtWidgets.QMainWindow):
         #     self.fig2=plt.figure(figsize=(12,18))
         
         lisdf=pd.read_csv('{}\\{}\\comp_{}.lis'.format(workfolder,fitname,fitname),sep=r'\s+',header=1)
-        inpl=lisdf.loc[0,'l']
+        inpl=0#lisdf.loc[0,'l']
         inpN=len(lisdf[lisdf['l']==inpl])
         mat=[1,0,0,1]
         reclab=1
         log=1
         plotupp=1
+        inpdf=lisdf[0:inpN]
         oopdf=lisdf[inpN:]
         ooptable=oopdf.groupby(['h','k']).size().reset_index().rename(columns={0:'count'})
         ooptable['FOR']=0
@@ -414,31 +448,41 @@ class StructurePlot(QtWidgets.QMainWindow):
         if self.modelcount<=1:
             self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig4)
             self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig8)
+            self.lis_comp(inpdf,datdf,fitname,self.fig13,self.Rrecs[0],self.Rrecs[1],0.025)  #compdf,name,fig,Rrec1,Rrec2,
             self.stackedWidget.setCurrentIndex(0)
             self.stackedWidget_3.setCurrentIndex(0)
+            self.stackedWidget_4.setCurrentIndex(0)
             self.fig4.set_tight_layout(True)
             self.fig8.set_tight_layout(True)
             self.canvas4.draw()
             self.canvas8.draw()
+            self.canvas13.draw()
 
         elif self.modelcount==2:
             self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig5)
             self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig9)
+            self.lis_comp(inpdf,datdf,fitname,self.fig14,self.Rrecs[0],self.Rrecs[1],0.025)  #compdf,name,fig,Rrec1,Rrec2,
             self.stackedWidget.setCurrentIndex(1)
             self.stackedWidget_3.setCurrentIndex(1)
+            self.stackedWidget_4.setCurrentIndex(1)
             self.fig5.set_tight_layout(True)
             self.fig9.set_tight_layout(True)
             self.canvas5.draw()
             self.canvas9.draw()
+            self.canvas14.draw()
+
         elif self.modelcount==3:
             self.CTR_plot(ctrdf,1,log,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig11)
             self.CTR_plot(fordf,1,0,fitname,mat,plotupp,workfolder,reclab,datdf,scales,fig=self.fig10)
+            self.lis_comp(inpdf,datdf,fitname,self.fig15,self.Rrecs[0],self.Rrecs[1],0.025)  #compdf,name,fig,Rrec1,Rrec2,
             self.stackedWidget.setCurrentIndex(2)
             self.stackedWidget_3.setCurrentIndex(2)
+            self.stackedWidget_4.setCurrentIndex(2)
             self.fig11.set_tight_layout(True)
             self.fig10.set_tight_layout(True)
             self.canvas11.draw()
             self.canvas10.draw()
+            self.canvas15.draw()
 
         # else:
         #     oopdf=lisdf
@@ -453,6 +497,10 @@ class StructurePlot(QtWidgets.QMainWindow):
         fit=self.fittext.toPlainText().strip('""')
         rodfolder=self.rodfolder.toPlainText().strip('""')
         mypath="{}\\{}".format(directory,fit)
+        try:
+            os.remove(r'{}\savefit.mac'.format(rodfolder)) #delete old saving macro to avoid overwriting previous datasets if file in O-drive is not update soon enough
+        except:
+            print('no previous saving file to delete')
         if not os.path.isdir(mypath):
             
             os.makedirs(mypath)
@@ -489,18 +537,28 @@ class StructurePlot(QtWidgets.QMainWindow):
         bulf=lines[1].strip().split(' ')[-2]
         fitf=lines[1].strip().split(' ')[-1]
         datadf=pd.read_csv(datf,sep='\t')
+        try:
+            os.remove(r"{}\savefullprofs.mac".format(rodfolder)) #delete old profile macro to avoid overwriting previous datasets if file in O-drive is not update soon enough
+        except:
+            print('no previous profile file to delete')
         #comp=pd.read_csv("{}\\{}\\comp_{}.lis".format(directory,fit,fit),sep=r'\s+',header=1)
         f = open(r"{}\savefullprofs.mac".format(rodfolder),"w")
         f.write('re dat {}\n'.format(datf))
         f.write('re bul {}\n'.format(bulf))
         f.write('re fit {}\n'.format(fitf))
         f.write('re par {}\n'.format(parf))
+        f.write("re con {}\\{}\\con_{}\n".format(directory,fit,fit))
+        #f.write('mac loadmatricescu44 return return\n')
         # f.write('set cal nsurf 28 return return \n')
         # f.write('set cal s2 0.1 return return \n')
         f.write('mac sfsetup\n')
         #f.write('re par limits\n')
         print(datf)
-        scans=datadf[datadf['L']>0.2].groupby(['H','K']).size().reset_index().rename(columns={0:'count'})
+        try:
+            scans=datadf[datadf['L']>0.2].groupby(['H','K']).size().reset_index().rename(columns={0:'count'})
+        except:
+            datadf[['H','K','L']]=datadf[['h','k','l']]
+            scans=datadf[datadf['L']>0.2].groupby(['H','K']).size().reset_index().rename(columns={0:'count'})
         for i in np.arange(len(scans)):
             h=int(scans.loc[i,'H'])
             k=int(scans.loc[i,'K'])
@@ -521,11 +579,12 @@ class StructurePlot(QtWidgets.QMainWindow):
         modn=self.modelcount 
         if modn<=3:
         #self.modelinfo[modn]=[parf,fitf]
+            self.plot3Dcomp(parf,fitf,ax=self.axs3d[modn-1],canv=self.canvs3d[modn-1])
             self.updatectrs(workfolder,fitname)
             
             self.modlabels[modn-1].setText('Model {}: {}'.format(modn,fitname))
             
-            self.plot3Dcomp(parf,fitf,ax=self.axs3d[modn-1],canv=self.canvs3d[modn-1])
+            
             self.stackedWidget_2.setCurrentIndex(modn-1)
             self.stackedWidget.setCurrentIndex(modn-1)
             self.canvs3d[modn-1].draw()
@@ -636,11 +695,12 @@ class StructurePlot(QtWidgets.QMainWindow):
         parf=par
         if len(parf)>0:
             pard=self.readpar(parf)
-            occs=pard[1][['parameter','value']].reset_index(drop=True)
-            totalstring=''
-            for i in np.arange(len(occs)):
-                totalstring+='{}  {}\n'.format(occs.loc[i,'parameter'],occs.loc[i,'value'])
-            self.parinfo.setText('Occupancy info:\n'+totalstring)
+            if len(pard[1])>0:
+                occs=pard[1][['parameter','value']].reset_index(drop=True)
+                totalstring=''
+                for i in np.arange(len(occs)):
+                    totalstring+='{}  {}\n'.format(occs.loc[i,'parameter'],occs.loc[i,'value'])
+                    self.parinfo.setText('Occupancy info:\n'+totalstring)
 
         self.ptitle=fit
         if len(self.ptitle)>0:
@@ -673,6 +733,7 @@ class StructurePlot(QtWidgets.QMainWindow):
         # Comment or uncomment following both lines to test the fake bounding box:
         for xb, yb, zb in zip(Xb, Yb, Zb):
             ax.plot([xb], [yb], [zb], 'w')
+
     def openrf(self,rf):
         readfile=open(r'{}'.format(rf))
         lines=readfile.readlines()
@@ -730,20 +791,69 @@ class StructurePlot(QtWidgets.QMainWindow):
             self.model4['yang']=self.model['yang']+self.lattice[1]
             self.modelfull=self.model.append([self.model2,self.model3,self.model4]).reset_index(drop=True)
             
-            con1=abs(self.modelfull['xang']-self.modelfull.loc[ind+3*len(self.model),'xang'])<3
-            con2= abs(self.modelfull['yang']-self.modelfull.loc[ind+3*len(self.model),'yang'])<3
-            con3=abs(self.modelfull['zang']-self.modelfull.loc[ind+3*len(self.model),'zang'])<3
-            con4=abs(self.modelfull['zang']-self.modelfull.loc[ind+3*len(self.model),'zang'])>0
-            nearest=self.modelfull[(con1&con2&con3&con4)].reset_index(drop=True)
-            nearest['bondlength(Å)']=0
-            for n in np.arange(len(nearest)):
-                p1=self.modelfull.loc[ind+3*len(self.model),['xang','yang','zang']]
-                p2=nearest.loc[n,['xang','yang','zang']]
-                nearest.loc[n,'bondlength(Å)']=self.calcvec(p1,p2)
-            newnear=nearest.sort_values(by='bondlength(Å)')
-            print(newnear[['index','El','bondlength(Å)']])
+            # #schematic of 2x2 grid of repeat unit cells
+            # # |0,1   1,1|
+            # # |0,0   1,0|
+            # #identify short bonds for (1,1) of 2x2 grid of repeat unit cells
+            # con1a=abs(self.modelfull['xang']-self.modelfull.loc[ind+3*len(self.model),'xang'])<3
+            # con2a= abs(self.modelfull['yang']-self.modelfull.loc[ind+3*len(self.model),'yang'])<3
+            # con3a=abs(self.modelfull['zang']-self.modelfull.loc[ind+3*len(self.model),'zang'])<3
+            # con4a=abs(self.modelfull['zang']-self.modelfull.loc[ind+3*len(self.model),'zang'])>0
+            # nearesta=self.modelfull[(con1a&con2a&con3a&con4a)].reset_index(drop=True)
+
+            # #identify short bonds for  0,0  of a 2x2 grid of repeat unit cells
+            # con1b=abs(self.modelfull['xang']-self.modelfull.loc[ind,'xang'])<3
+            # con2b= abs(self.modelfull['yang']-self.modelfull.loc[ind,'yang'])<3
+            # con3b=abs(self.modelfull['zang']-self.modelfull.loc[ind,'zang'])<3
+            # con4b=abs(self.modelfull['zang']-self.modelfull.loc[ind,'zang'])>0
+
+            # nearestb=self.modelfull[(con1b&con2b&con3b&con4b)].reset_index(drop=True)
+            # nearest=pd.concat([nearesta,nearestb]).reset_index(drop=True)
+
+
+            # nearest['bondlength(Å)']=0
+            # for n in np.arange(len(nearest)):
+            #     if n<len(nearesta):
+            #         p1=self.modelfull.loc[ind+3*len(self.model),['xang','yang','zang']]
+            #     else:
+            #         p1=self.modelfull.loc[ind,['xang','yang','zang']]
+            #     p2=nearest.loc[n,['xang','yang','zang']]
+            #     nearest.loc[n,'bondlength(Å)']=self.calcvec(p1,p2)
+            # newnear=nearest.sort_values(by='bondlength(Å)')
+            # print(newnear[['index','El','bondlength(Å)']])
+
+            xyzpos=np.array([self.modelfull['xang'],self.modelfull['yang'],self.modelfull['zang']])
+            separations = xyzpos[ :,np.newaxis, :] - xyzpos[:,:, np.newaxis]
+            squared_displacements = separations * separations
+            square_distances = np.sum(squared_displacements, 0)
+            bond_distances=np.sqrt(square_distances)
+            limits=[0,2.1]
+            smallbonds_val=[bond_distances[i][j] for i in range(bond_distances.shape[0]) for j in range(bond_distances.shape[1])\
+                 if (bond_distances[i][j]>limits[0])&(bond_distances[i][j]<limits[1]) ]
+            smallbonds_ind=[[i,j] for i in range(bond_distances.shape[0]) for j in range(bond_distances.shape[1]) \
+                if (bond_distances[i][j]>limits[0])&(bond_distances[i][j]<limits[1]) ]
+
+            a=np.array(smallbonds_val)
+            #print(bond_distances)
+            try:
+                minbondlocs=np.where(a==a.min())
+                # for loc in minbondlocs[0]:
+                #     print(smallbonds_ind[loc],self.modelfull.loc[smallbonds_ind[loc][0],'El'],self.modelfull.loc[smallbonds_ind[loc][1],'El'], round(a[loc],4),'Å',\
+                #         self.modelfull.loc[smallbonds_ind[loc][0],'Z'])
+            except Exception as e:
+                print('error stated as :', e,'\n possibly no bonds found within range')
+            
+            for pos in smallbonds_ind:
+                start=self.modelfull.loc[pos[0]][['xang','yang','zang']]
+                end=self.modelfull.loc[pos[1]][['xang','yang','zang']]
+                self.ax.plot([start['xang'], end['xang']],[start['yang'],end['yang']],[start['zang'], end['zang']],color='red')
+            
+
+
+
+
         
-    def calcstructure(self,file,parfile=0):
+    def calcstructure(self,file,parfile=0,M=[1,0,0,1]):
         """
         calculate structure from a given fit file
         """
@@ -785,6 +895,29 @@ class StructurePlot(QtWidgets.QMainWindow):
         model['color']=model.apply(lambda x: self.getcolour(x['El']),axis=1)
         cols1=model['color']
         self.vectors=[a1,b1,c1]
+
+        M=[self.Mspin1.value(),self.Mspin2.value(),self.Mspin3.value(),self.Mspin4.value()]
+        #calculate reciprocal lattice for bulk
+        crossab=np.cross(a1,b1)
+        crossbc=np.cross(b1,c1)
+        crossca=np.cross(c1,a1)
+        denom=np.dot(a1,crossbc)
+        rec1=2*np.pi*(crossbc/denom)
+        rec2=2*np.pi*(crossca/denom)
+              
+        #define reconstruction surface mesh in real space
+        a2=np.add(np.multiply(M[0],a1),np.multiply(M[1],b1))
+        b2=np.add(np.multiply(M[2],a1),np.multiply(M[3],b1))
+        c2=c1
+        #calculate reconstruction reciprocal lattice vectors
+        crossab2=np.cross(a2,b2)
+        crossbc2=np.cross(b2,c2)
+        crossca2=np.cross(c2,a2)
+        denom2=np.dot(a2,crossbc2)
+        Rrec1=2*np.pi*(crossbc2/denom2)
+        Rrec2=2*np.pi*(crossca2/denom2)
+        self.Rrecs=[Rrec1,Rrec2]
+        print(self.Rrecs)
 
 
         if (len(parf)>0)  & (self.parcheck.isChecked()==True):
@@ -1023,6 +1156,25 @@ class StructurePlot(QtWidgets.QMainWindow):
         Zcol=self.occhigh.toPlainText()
         self.dispset=self.ax.scatter3D(dispx, dispy, dispz,c=Zcol,edgecolors='black',alpha=1,s=100)
         self.canvas.draw()
+
+    def lis_comp(self,compdf,datdf,name,fig,Rrec1,Rrec2,scale):
+        compare=compdf
+        x=compare['h']
+        y=compare['k']
+        I=compare['f-dat']
+        Icalc=compare['f-th']
+        ax=fig.add_subplot(1,1,1)
+        
+        for i in np.arange(len(x)):
+            totalvec=1*((x[i]*Rrec1)+(y[i]*Rrec2))
+            patch1=Wedge((totalvec[0], totalvec[1]),scale*np.sqrt((2/np.pi)*I[i]), 270, 90,facecolor='black')
+            patch2=Wedge((totalvec[0], totalvec[1]),scale*np.sqrt((2/np.pi)*Icalc[i]), 90, 270,facecolor='None',ec='black')
+            ax.add_patch(patch1)
+            ax.add_patch(patch2)
+        ax.set_xlim(-6,6)# 
+        ax.set_ylim(-4,4)
+        ax.axis('equal')
+        ax.set_title('{}'.format(name))
 
     def CTR_plot(self,df,model,log,fit,mat,plotupp,wf,reclab,datdf,scales,fig):
     		ooptable=df.groupby(['h','k']).size().reset_index().rename(columns={0:'count'})

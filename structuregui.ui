@@ -141,7 +141,11 @@ p, li { white-space: pre-wrap; }
     </property>
     <layout class="QGridLayout" name="gridLayout">
      <item row="10" column="0">
-      <widget class="QSpinBox" name="atomindex"/>
+      <widget class="QSpinBox" name="atomindex">
+       <property name="maximum">
+        <number>500</number>
+       </property>
+      </widget>
      </item>
      <item row="3" column="1">
       <widget class="QRadioButton" name="xbutton">
@@ -339,7 +343,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;O:\SOFC_project\2015_3nm-LAO\matlab_reduced_1-RT\RODfits&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;O:\Ag(111)_beamtime_Apr2019\ROD_fits&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="fittext">
@@ -356,7 +360,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;LAO_LSNO_19947&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;dep234_1210err_24665&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
@@ -573,6 +577,15 @@ profile macro</string>
          </color>
         </brush>
        </colorrole>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="NoBrush">
+         <color alpha="128">
+          <red>0</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
       </active>
       <inactive>
        <colorrole role="WindowText">
@@ -704,6 +717,15 @@ profile macro</string>
        <colorrole role="ToolTipText">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
+          <red>0</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="NoBrush">
+         <color alpha="128">
           <red>0</red>
           <green>0</green>
           <blue>0</blue>
@@ -847,6 +869,15 @@ profile macro</string>
          </color>
         </brush>
        </colorrole>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="NoBrush">
+         <color alpha="128">
+          <red>0</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
       </disabled>
      </palette>
     </property>
@@ -954,13 +985,13 @@ multiple surfaces</string>
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>10</y>
+      <y>20</y>
       <width>1021</width>
       <height>781</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>4</number>
     </property>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -1036,19 +1067,18 @@ multiple surfaces</string>
         <layout class="QVBoxLayout" name="vlayout3dcomp2"/>
        </widget>
       </widget>
-      <widget class="QWidget" name="page_9">
-       <widget class="QWidget" name="verticalLayoutWidget_12">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>0</y>
-          <width>981</width>
-          <height>721</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="vlayout3dcomp3"/>
-       </widget>
-      </widget>
+      <widget class="QWidget" name="page_9"/>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_12">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>981</width>
+        <height>721</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="vlayout3dcomp3"/>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
@@ -1097,8 +1127,8 @@ multiple surfaces</string>
        <widget class="QWidget" name="verticalLayoutWidget_10">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>20</y>
+          <x>10</x>
+          <y>0</y>
           <width>961</width>
           <height>691</height>
          </rect>
@@ -1154,13 +1184,70 @@ multiple surfaces</string>
        <widget class="QWidget" name="verticalLayoutWidget_11">
         <property name="geometry">
          <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>961</width>
+          <height>691</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlFORmod3"/>
+       </widget>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>In-plane compare</string>
+     </attribute>
+     <widget class="QStackedWidget" name="stackedWidget_4">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1001</width>
+        <height>731</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QWidget" name="page_10">
+       <widget class="QWidget" name="verticalLayoutWidget_13">
+        <property name="geometry">
+         <rect>
           <x>20</x>
           <y>20</y>
           <width>961</width>
           <height>691</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="vlFORmod3"/>
+        <layout class="QVBoxLayout" name="vlinpmod1"/>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_11">
+       <widget class="QWidget" name="verticalLayoutWidget_14">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>961</width>
+          <height>691</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlinpmod2"/>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_12">
+       <widget class="QWidget" name="verticalLayoutWidget_15">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>961</width>
+          <height>691</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="vlinpmod3"/>
        </widget>
       </widget>
      </widget>
@@ -1244,6 +1331,65 @@ multiple surfaces</string>
      <string>plot on main</string>
     </property>
    </widget>
+   <widget class="QSpinBox" name="Mspin1">
+    <property name="geometry">
+     <rect>
+      <x>1330</x>
+      <y>810</y>
+      <width>42</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>1</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="Mspin2">
+    <property name="geometry">
+     <rect>
+      <x>1380</x>
+      <y>810</y>
+      <width>42</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="Mspin3">
+    <property name="geometry">
+     <rect>
+      <x>1330</x>
+      <y>840</y>
+      <width>42</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="Mspin4">
+    <property name="geometry">
+     <rect>
+      <x>1380</x>
+      <y>840</y>
+      <width>42</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>1</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="mod1label_2">
+    <property name="geometry">
+     <rect>
+      <x>1210</x>
+      <y>820</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>reconstruction matrix</string>
+    </property>
+   </widget>
    <zorder>tabWidget</zorder>
    <zorder>label</zorder>
    <zorder>text1</zorder>
@@ -1283,6 +1429,11 @@ multiple surfaces</string>
    <zorder>mod3label</zorder>
    <zorder>checkbonds</zorder>
    <zorder>plotmaincheck</zorder>
+   <zorder>Mspin1</zorder>
+   <zorder>Mspin2</zorder>
+   <zorder>Mspin3</zorder>
+   <zorder>Mspin4</zorder>
+   <zorder>mod1label_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
