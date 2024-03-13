@@ -22,7 +22,7 @@ class StructurePlot(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(StructurePlot, self).__init__(*args, **kwargs)
-        self.ui = uic.loadUi(r"C:\\Users\\rpy65944\Documents\\GitHub\SXRDanalysis\structuregui.ui", self)
+        self.ui = uic.loadUi(r".\structuregui.ui", self)
         self.figure = plt.figure()
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
