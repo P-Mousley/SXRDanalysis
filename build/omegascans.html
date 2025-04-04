@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html lang="English" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Guide for processing inplane omega scans &#8212; SXRD analysis guides  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css?v=572af1d6" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx_collapse.css?v=226d88b4" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=17a5fc02" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css?v=5c84f910" />
+    <script src="_static/documentation_options.js?v=4b3d11ce"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/thebelab-helper.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js?v=ffc8af2d"></script>
+    <script src="_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js?v=12818e64"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Guide to surface x-ray diffraction analysis" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="guide-for-processing-inplane-omega-scans">
+<h1>Guide for processing inplane omega scans<a class="headerlink" href="#guide-for-processing-inplane-omega-scans" title="Link to this heading">¶</a></h1>
+<section id="extract-intensity-profiles-using-dawn">
+<h2>extract intensity profiles - using DAWN<a class="headerlink" href="#extract-intensity-profiles-using-dawn" title="Link to this heading">¶</a></h2>
+<div class="sphinx_collapse docutils container">
+<input class="sphinx_collapse__input" id="d4b6ac57-7a20-479c-88ee-bd2ecae662ed" name="d4b6ac57-7a20-479c-88ee-bd2ecae662ed" type="checkbox"><label class="sphinx_collapse__label" for="d4b6ac57-7a20-479c-88ee-bd2ecae662ed"><i class="sphinx_collapse__icon"></i>starting DAWN</label><div class="sphinx_collapse__content docutils container">
+<p>To open DAWN from a fresh terminal session enter</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module<span class="w"> </span>load<span class="w"> </span>dawn
+dawn
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/load_dawn.png"><img alt="_images/load_dawn.png" src="_images/load_dawn.png" style="width: 85%;" />
+</a>
+<p>and select the open perspective.</p>
+<p>in the DAWN window open up a new ‘processing’ perspective – click on the new perspective options (red circle in image below)</p>
+<a class="reference internal image-reference" href="_images/dawn_perspective.png"><img alt="_images/dawn_perspective.png" src="_images/dawn_perspective.png" style="width: 85%;" />
+</a>
+</div>
+</div>
+<div class="sphinx_collapse docutils container">
+<input class="sphinx_collapse__input" id="506e4fcf-e8f4-4f84-876c-c025e1b9eeb8" name="506e4fcf-e8f4-4f84-876c-c025e1b9eeb8" type="checkbox"><label class="sphinx_collapse__label" for="506e4fcf-e8f4-4f84-876c-c025e1b9eeb8"><i class="sphinx_collapse__icon"></i>setup the analysis pipeline</label><div class="sphinx_collapse__content docutils container">
+<p>use the file browser panel on the right to navigate to your scan, and then double click to load it. This will open the dialog window show below – if the first image is being displayed it has read the data file correctly, and press finish.</p>
+<a class="reference internal image-reference" href="_images/dawn_read_data.png"><img alt="_images/dawn_read_data.png" src="_images/dawn_read_data.png" style="width: 85%;" />
+</a>
+<p>This will then show your scan in the Data slice view, with a plot of the image selected in the plot underneath.</p>
+<a class="reference internal image-reference" href="_images/dawn_sliceview.png"><img alt="_images/dawn_sliceview.png" src="_images/dawn_sliceview.png" style="width: 85%;" />
+</a>
+<dl class="simple">
+<dt>To carry out the data reduction , first add in steps to create a processing pipeline. The three steps needed are:</dt><dd><ul class="simple">
+<li><p><strong>crop data [2d]</strong> : selects a specific region of interest within the image</p></li>
+<li><p><strong>set Poisson error</strong> : chooses to use counting statistics for the error calculation</p></li>
+<li><p><strong>Sum</strong> : does a simple sum of all pixels within the ROI</p></li>
+</ul>
+</dd>
+</dl>
+<p>Having add these three steps and selected the ROI (xstart,xend,ystart,yend), your dawn window should now look like this</p>
+<a class="reference internal image-reference" href="_images/dawn_omega_pipeline.png"><img alt="_images/dawn_omega_pipeline.png" src="_images/dawn_omega_pipeline.png" style="width: 85%;" />
+</a>
+<p>now click the green triangle in the Data Slice view (circled in red in image below) to start the processing pipeline. This will ask for an output directory to save the data to, and you can check ‘Automatically load data to DataVis perspective’ if you want to immediately view the data in DAWN.</p>
+<a class="reference internal image-reference" href="_images/dawn_pipeline_run.png"><img alt="_images/dawn_pipeline_run.png" src="_images/dawn_pipeline_run.png" style="width: 85%;" />
+</a>
+<p>Click ok and a short progress bar will appear showing how far the processing has got.
+Once finished the progress bar window will disappear. To view in DAWN select the DataVis perspective tab in the top right. The dataset should be in the list on the lefthand side – select the tickbox to choose to plot it, and then tick  ‘/processed/auxiliary/2-Sum/sum/data’ option on the righthand side to display the profile.</p>
+<a class="reference internal image-reference" href="_images/dawn_datavis_output.png"><img alt="_images/dawn_datavis_output.png" src="_images/dawn_datavis_output.png" style="width: 85%;" />
+</a>
+<p>To carry out the processing on many scans in a batch process you simply add more scans to the Data Slice view .
+Add all scans from the same dataset, and ensure the box defined in Crop Data is suitable for all scans – increase the box size if necessary. It should cover all the height of the signal vertically, and most of the signal horizontally as well – if you have a very broad signal which is very wide, try to gauge where most of the signal falls within (~90%). A wider ROI will broaden the peak you obtain from the images, so the most important thing is to use exactly the same size ROI box for all scans within one dataset.</p>
+<a class="reference internal image-reference" href="_images/dawn_batch_pipeline.png"><img alt="_images/dawn_batch_pipeline.png" src="_images/dawn_batch_pipeline.png" style="width: 85%;" />
+</a>
+<p>You should now have a folder full of the reduced data scans</p>
+<a class="reference internal image-reference" href="_images/dawn_example_batchdone.png"><img alt="_images/dawn_example_batchdone.png" src="_images/dawn_example_batchdone.png" style="width: 85%;" />
+</a>
+</div>
+</div>
+<div class="sphinx_collapse docutils container">
+<input class="sphinx_collapse__input" id="973a3d50-0b21-4a57-a30f-bc3702dcd563" name="973a3d50-0b21-4a57-a30f-bc3702dcd563" type="checkbox"><label class="sphinx_collapse__label" for="973a3d50-0b21-4a57-a30f-bc3702dcd563"><i class="sphinx_collapse__icon"></i>fit profiles using jupyter notebook</label><div class="sphinx_collapse__content docutils container">
+<p>open up the jupyter notebook omega_scan_fitting.ipynb , fill in the correct path information and run the cells to fit the DAWN profiles. This should create a subfolder and fill it with a dataset and plots to show the fitting of each scan</p>
+<a class="reference internal image-reference" href="_images/nb_fitting_output.png"><img alt="_images/nb_fitting_output.png" src="_images/nb_fitting_output.png" style="width: 85%;" />
+</a>
+<p>here will be a csv file with your data set with the ‘h,k,l,I,dI’ to use with ROD</p>
+<a class="reference internal image-reference" href="_images/csv_example.png"><img alt="_images/csv_example.png" src="_images/csv_example.png" style="width: 85%;" />
+</a>
+<p>each image will show the fit done for each scan</p>
+<a class="reference internal image-reference" href="_images/nb_fitplots.png"><img alt="_images/nb_fitplots.png" src="_images/nb_fitplots.png" style="width: 85%;" />
+</a>
+<p>Thefirst plot shows the following:</p>
+<ul class="simple">
+<li><p>green line : linear background</p></li>
+<li><p>orange line : fitting function e.g pseudo-voigt</p></li>
+<li><p>red line : combined background + function</p></li>
+<li><p>blue line : data points</p></li>
+<li><p>dotted line : value where image in plot 3 is taken</p></li>
+</ul>
+<p>The middle plot will show the d5i monitor values if available in data.
+The last plot will show the cropped image for the maximum intensity peak position, show with the vertical dotted line in the top plot</p>
+</div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SXRD analysis guides</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Guide for processing inplane omega scans</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#extract-intensity-profiles-using-dawn">extract intensity profiles - using DAWN</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Guide to surface x-ray diffraction analysis</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Philip Mousley.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/omegascans.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
